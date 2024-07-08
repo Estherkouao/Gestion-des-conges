@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 
 from gestion_congé_app.models import (
-    CustomUser, HRs, Directors, Managers, Department, Employees, LeaveRequest
+    CustomUser, Responsablerhs, Directors, Managers, Department, Employees, LeaveRequest
 )
 
 

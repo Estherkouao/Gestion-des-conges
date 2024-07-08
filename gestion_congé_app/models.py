@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
     USER_TYPE_CHOICES = (
         ("1", "Employee"),
         ("2", "Manager"),
-        ("3", "HR"),
+        ("3", "Responsablerh"),
         ("4", "Director"),
         ("5", "HOD"),
     )
@@ -22,7 +22,7 @@ class AdminHOD(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
-class HRs(models.Model):
+class Responsablerhs(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     address = models.TextField()
@@ -88,8 +88,8 @@ class LeaveRequest(models.Model):
         ('Pending', 'Pending'),
         ('Approved by Manager', 'Approved by Manager'),
         ('Rejected by Manager', 'Rejected by Manager'),
-        ('Approved by HR', 'Approved by HR'),
-        ('Rejected by HR', 'Rejected by HR'),
+        ('Approved by Responsablerh', 'Approved by Rresponsablerh'),
+        ('Rejected by Responsablerh', 'Rejected by Rresponsablerh'),
         ('Approved by Director', 'Approved by Director'),
         ('Rejected by Director', 'Rejected by Director'),
     )
@@ -98,7 +98,7 @@ class LeaveRequest(models.Model):
     end_date = models.DateField()
     leave_type = models.CharField(max_length=50)
     reason = models.TextField()
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     manager_comment = models.TextField(blank=True, null=True)
     hr_comment = models.TextField(blank=True, null=True)
     director_comment = models.TextField(blank=True, null=True)
@@ -122,7 +122,7 @@ def create_user_profile(sender, instance, created, **kwargs):
         elif instance.user_type == "2":
             Managers.objects.create(admin=instance)
         elif instance.user_type == "3":
-            HRs.objects.create(admin=instance)
+            Responsablerhs.objects.create(admin=instance)
         elif instance.user_type == "4":
             Directors.objects.create(admin=instance)
         elif instance.user_type == "5":
@@ -136,7 +136,7 @@ def save_user_profile(sender, instance, **kwargs):
     elif instance.user_type == "2":
         instance.managers.save()
     elif instance.user_type == "3":
-        instance.Hrs.save()
+        instance.responsablerhs.save()
     elif instance.user_type == "4":
         instance.directors.save()
     elif instance.user_type == "5":

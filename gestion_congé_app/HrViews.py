@@ -6,8 +6,8 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from gestion_congé_app.models import (
-    CustomUser, HRs, Directors, Managers, Department, Employees
+    CustomUser, Responsablerhs, Directors, Managers, Department, Employees
 )
 
-def hr_home(request):
+def responsablerh_home(request):
     pass

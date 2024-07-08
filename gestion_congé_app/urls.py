@@ -22,12 +22,13 @@ urlpatterns = [
     path('delete_manager/<int:manager_id>/', HODViews.delete_manager, name="delete_manager"),
 
 
-    path('add_Hr/', HODViews.add_Hr, name="add_Hr"),
-    path('add_Hr_save/', HODViews.add_Hr_save, name="add_Hr_save"),
-    path('manage_Hr/', HODViews.manage_Hr, name="manage_Hr"),
-    path('edit_Hr/<int:Hr_id>/', HODViews.edit_Hr, name="edit_Hr"),
-    path('edit_Hr_save/', HODViews.edit_Hr_save, name="edit_Hr_save"),
-    path('delete_Hr/<int:Hr_id>/', HODViews.delete_Hr, name="delete_Hr"),
+    path('add_responsablerh/', HODViews.add_responsablerh, name="add_responsablerh"),
+    path('add_responsablerh_save/', HODViews.add_responsablerh_save, name="add_responsablerh_save"),
+    path('manage_responsablerh/', HODViews.manage_responsablerh, name="manage_responsablerh"),
+    path('edit_responsablerh/<int:responsablerh_id>/', HODViews.edit_responsablerh, name="edit_responsablerh"),
+    path('edit_responsablerh_save/', HODViews.edit_responsablerh_save, name="edit_responsablerh_save"),
+    path('delete_responsablerh/<int:responsablerh_id>/', HODViews.delete_responsablerh, name="delete_responsablerh"),
+
 
     path('add_director/', HODViews.add_director, name="add_director"),
     path('add_director_save/', HODViews.add_director_save, name="add_director_save"),
@@ -35,5 +36,14 @@ urlpatterns = [
     path('edit_director/<int:director_id>/', HODViews.edit_director, name="edit_director"),
     path('edit_director_save/', HODViews.edit_director_save, name="edit_director_save"),
     path('delete_director/<int:director_id>/', HODViews.delete_director, name="delete_director"),
+
+
+    path('add_employee/', HODViews.add_employee, name="add_employee"),
+    path('add_employee_save/', HODViews.add_employee_save, name="add_employee_save"),
+    path('manage_employee/', HODViews.manage_employee, name="manage_employee"),
+    path('edit_employee/<int:employee_id>/', HODViews.edit_employee, name="edit_employee"),
+    path('edit_employee_save/', HODViews.edit_employee_save, name="edit_employee_save"),
+    path('delete_employee/<int:employee_id>/', HODViews.delete_employee, name="delete_employee"),
+ 
 
 ]

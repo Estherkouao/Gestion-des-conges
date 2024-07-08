@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Lister Directeur
+    gére Employer
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,8 +11,8 @@
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_director' %}" role="button">+ Ajouter Directeur</a> <br/>&nbsp;
-
+            <a class="btn btn-primary" href="{% url 'add_employee' %}" role="button">+ Ajouter Employer</a> <br/>&nbsp;
+            
             {% if messages %}
                                 <div class="form-group">
                                 <div class="col-12">
@@ -36,7 +36,6 @@
                                 </div>
                                 </div>
                                 {% endif %}
-                                
 
             <div class="row">
 
@@ -44,7 +43,7 @@
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Détails Directeur</h3>
+                            <h3 class="card-title">Student Details</h3>
 
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
@@ -62,28 +61,40 @@
                             <thead>
                                 <tr>
                                 <th>ID</th>
-                                <th>Nom</th>
-                                <th>Prénom</th>
-                                <th>Nom d'utilisateur</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                                <th>Username</th>
                                 <th>Email</th>
-                                <th>Adresse</th>
-                                <th>Date de création</th>
+                                <th>Address</th>
+                                <th>Gender</th>
+                                <th>Profile Pic</th>
+                                <th>manager</th>
+                                <th>Start Year</th>
+                                <th>End Year</th>
+                                <th>Last Login</th>
+                                <th>Date Joined</th>
                                 <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for director in directors %}
+                                {% for employee in employees %}
                                 <tr>
-                                <td>{{ director.admin.id }}</td>
-                                <td>{{ director.admin.first_name }}</td>
-                                <td>{{ director.admin.last_name }}</td>
-                                <td>{{ director.admin.username }}</td>
-                                <td>{{ director.admin.email }}</td>
-                                <td>{{ director.address }}</td>
-                                <td>{{ director.created_at }}</td>
-                               
-                                    <a href="{% url 'edit_director' director.admin.id %}" class="btn btn-success">Modifier</a> 
-                                    <a href="{% url 'delete_director' director.admin.id %}" class="btn btn-danger">Effacer</a>
+                                <td>{{ employee.admin.id }}</td>
+                                <td>{{ employee.admin.first_name }}</td>
+                                <td>{{ employee.admin.last_name }}</td>
+                                <td>{{ employee.admin.username }}</td>
+                                <td>{{ employee.admin.email }}</td>
+                                <td>{{ employee.address }}</td>
+                                <td>{{ employee.gender }}</td>
+                                <td> <img src="{{ employee.profile_pic }}" style="width: 100px;" /> </td>
+                                <td>{{ employee.department_id.department }}</td>
+                                <td>{{ employee.department_id.department }}</td>
+                                <td>{{ employee.course_id.course_name }}</td>
+                                <td>{{ employee.admin.last_login }}</td>
+                                <td>{{ employee.admin.date_joined }}</td>
+                                <td>
+                                    <a href="{% url 'edit_employee' employee.admin.id %}" class="btn btn-success">Edit</a> 
+                                    <a href="{% url 'delete_employee' employee.admin.id %}" class="btn btn-danger">Delete</a>
                                 </td>
                                 </tr>
                                 {% endfor %}

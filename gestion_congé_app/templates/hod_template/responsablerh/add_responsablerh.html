@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Ajouter RH
+    Ajouter Responsable RH
 {% endblock page_title %}
 
 {% block main_content %}
@@ -16,11 +16,11 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Ajouter RH</h3>
+                        <h3 class="card-title">Ajouter Responsable RH</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'add_Hr_save' %}">
+                    <form role="form" method="POST" action="{% url 'add_responsablerh_save' %}">
                         {% csrf_token %}
 
                         
@@ -85,7 +85,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Ajouter RH</button>
+                        <button type="submit" class="btn btn-primary">Ajouter Responsable RH</button>
                         </div>
                     </form>
                     </div>

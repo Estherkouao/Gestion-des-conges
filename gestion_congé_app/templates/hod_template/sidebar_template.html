@@ -51,41 +51,40 @@
               </a>
             </li>
 
-             <li class="nav-item">
-              {% url 'manage_Hr' as manage_Hr %}
-              {% url 'edit_Hr' Hr_id=id as edit_Hr %}
-              <a href="{{ manage_Hr }}" class="nav-link {% if request.path == manage_Hr %} active {% endif %} {% if request.path == edit_Hr %} active {% endif %}">
+             
+            <li class="nav-item">
+              {% url 'manage_responsablerh' as manage_responsablerh %}
+              {% url 'edit_responsablerh' responsablerh_id=id as edit_responsablerh %}
+              <a href="{{ manage_responsablerh }}" class="nav-link {% if request.path == manage_responsablerh %} active {% endif %} {% if request.path == edit_responsablerh %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
-                  Liste des RHs
+                  Liste Responsable RH
                 </p>
               </a>
             </li>
             
-             
             <li class="nav-item">
-              {% url 'add_Hr' as add_Hr %}
-              <a href="{{ add_Hr }}" class="nav-link {% if request.path == add_Hr %} active {% endif %}">
+              {% url 'add_responsablerh' as add_responsablerh %}
+              <a href="{{ add_responsablerh }}" class="nav-link {% if request.path == add_responsablerh %} active {% endif %}">
                 <i class="nav-icon fas fa-th"></i>
                 <p>
-                  Ajouter RH
+                  Ajouter Reponsable RH
                 </p>
               </a>
             </li>
 
-            
-             <li class="nav-item">
+                   <li class="nav-item">
               {% url 'manage_director' as manage_director %}
               {% url 'edit_director' director_id=id as edit_director %}
               <a href="{{ manage_director }}" class="nav-link {% if request.path == manage_director %} active {% endif %} {% if request.path == edit_director %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
-                  Lister Directeurs
+                  Liste Directeur
                 </p>
               </a>
             </li>
 
-               
+            
             <li class="nav-item">
               {% url 'add_director' as add_director %}
               <a href="{{ add_director }}" class="nav-link {% if request.path == add_director %} active {% endif %}">
@@ -96,7 +95,29 @@
               </a>
             </li>
 
+
+            <li class="nav-item">
+              {% url 'manage_employee' as manage_employee %}
+              {% url 'edit_employee' employee_id=id as edit_employee %}
+              <a href="{{ manage_employee }}" class="nav-link {% if request.path == manage_employee %} active {% endif %} {% if request.path == edit_employee %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  Liste Employer 
+                </p>
+              </a>
+            </li>
             
+            <li class="nav-item">
+              {% url 'add_employee' as add_employee %}
+              <a href="{{ add_employee }}" class="nav-link {% if request.path == add_employee %} active {% endif %}">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  Ajouter Employer 
+                </p>
+              </a>
+            </li>
+
+
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

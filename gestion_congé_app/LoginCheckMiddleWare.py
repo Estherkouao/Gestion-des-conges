@@ -34,7 +34,7 @@ class LoginCheckMiddleWare(MiddlewareMixin):
                 elif modulename == "gestion_congé_app.views" or modulename == "django.views.static":
                     pass
                 else:
-                    return redirect("hr_home")
+                    return redirect("responsablerh_home")
                 
                  
             elif user.user_type == "4":

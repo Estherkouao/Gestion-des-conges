@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Lister RH
+    Lister directeur
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,7 +11,7 @@
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_Hr' %}" role="button">+ Ajouter RH</a> <br/>&nbsp;
+            <a class="btn btn-primary" href="{% url 'add_director' %}" role="button">+ Ajouter directeur</a> <br/>&nbsp;
 
             {% if messages %}
                                 <div class="form-group">
@@ -44,7 +44,7 @@
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Détails RH</h3>
+                            <h3 class="card-title">Détails directeur</h3>
 
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
@@ -72,18 +72,18 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for Hr in Hr %}
+                                {% for director in directors %}
                                 <tr>
-                                <td>{{ Hr.admin.id }}</td>
-                                <td>{{ Hr.admin.first_name }}</td>
-                                <td>{{ Hr.admin.last_name }}</td>
-                                <td>{{ Hr.admin.username }}</td>
-                                <td>{{ Hr.admin.email }}</td>
-                                <td>{{ Hr.address }}</td>
-                                <td>{{ Hr.created_at }}</td>
+                                <td>{{ director.admin.id }}</td>
+                                <td>{{ director.admin.first_name }}</td>
+                                <td>{{ director.admin.last_name }}</td>
+                                <td>{{ director.admin.username }}</td>
+                                <td>{{ director.admin.email }}</td>
+                                <td>{{ director.address }}</td>
+                                <td>{{ director.created_at }}</td>
                                 <td>
-                                    <a href="{% url 'edit_Hr' Hr.admin.id %}" class="btn btn-success">Modifier</a> 
-                                    <a href="{% url 'delete_Hr' Hr.admin.id %}" class="btn btn-danger">Effacer</a>
+                                    <a href="{% url 'edit_director' director.admin.id %}" class="btn btn-success">Modifier</a> 
+                                    <a href="{% url 'delete_director' director.admin.id %}" class="btn btn-danger">Effacer</a>
                                 </td>
                                 </tr>
                                 {% endfor %}

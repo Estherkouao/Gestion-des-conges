@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Edit Directeur | Username: {{ director.admin.username }} | #ID : {{ director.admin.id }}
+    Edit Responsable RH | Username: {{ responsablerh.admin.username }} | #ID : {{ responsablerh.admin.id }}
 {% endblock page_title %}
 
 {% block main_content %}
@@ -16,11 +16,11 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Directeur</h3>
+                        <h3 class="card-title">Edit Responsable RH</h3>
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'edit_director_save' %}">
+                    <form role="form" method="POST" action="{% url 'edit_responsablerh_save' %}">
                         {% csrf_token %}
 
                         
@@ -53,33 +53,33 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Email address</label>
-                                <input type="email" class="form-control" name="email" value="{{ director.admin.email }}">
+                                <input type="email" class="form-control" name="email" value="{{ responsablerh.admin.email }}">
                             </div>
 
                             <div class="form-group">
                                 <label>Username</label>
-                                <input type="text" class="form-control" name="username" value="{{ director.admin.username }}">
+                                <input type="text" class="form-control" name="username" value="{{ responsablerh.admin.username }}">
                             </div>
 
                             {% comment %} <div class="form-group">
                                 <label>Password</label>
-                                <input type="password" class="form-control" name="password" value="{{ director.admin.password }}">
+                                <input type="password" class="form-control" name="password" value="{{ manager.admin.password }}">
                             </div> {% endcomment %}
 
                             <div class="form-group">
                                 <label>First Name</label>
-                                <input type="text" class="form-control" name="first_name" value="{{ director.admin.first_name }}">
+                                <input type="text" class="form-control" name="first_name" value="{{ responsablerh.admin.first_name }}">
                             </div>
 
                             <div class="form-group">
                                 <label>Last Name</label>
-                                <input type="text" class="form-control" name="last_name" value="{{ director.admin.last_name }}">
-                                <input type="hidden" name="director_id" value="{{ director.admin.id }}" />
+                                <input type="text" class="form-control" name="last_name" value="{{ responsablerh.admin.last_name }}">
+                                <input type="hidden" name="responsablerh_id" value="{{ responsablerh.admin.id }}" />
                             </div>
 
                             <div class="form-group">
                                 <label>Address</label>
-                                <textarea class="form-control" name="address">{{ manager.address }}</textarea>
+                                <textarea class="form-control" name="address">{{ responsablerh.address }}</textarea>
                             </div>
 
                             
@@ -89,7 +89,7 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Update manager</button>
+                        <button type="submit" class="btn btn-primary">Update Responsable RH</button>
                         </div>
                     </form>
                     </div>
@@ -102,3 +102,5 @@
       </section>
 
   {% endblock main_content %}
+
+  
