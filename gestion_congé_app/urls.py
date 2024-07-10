@@ -32,7 +32,7 @@ urlpatterns = [
 
     path('add_director/', HODViews.add_director, name="add_director"),
     path('add_director_save/', HODViews.add_director_save, name="add_director_save"),
-    path('manage_director/', HODViews.manage_director, name=" manage_director"),
+    path('manage_director/', HODViews.manage_director, name="manage_director"),
     path('edit_director/<int:director_id>/', HODViews.edit_director, name="edit_director"),
     path('edit_director_save/', HODViews.edit_director_save, name="edit_director_save"),
     path('delete_director/<int:director_id>/', HODViews.delete_director, name="delete_director"),
@@ -44,6 +44,17 @@ urlpatterns = [
     path('edit_employee/<int:employee_id>/', HODViews.edit_employee, name="edit_employee"),
     path('edit_employee_save/', HODViews.edit_employee_save, name="edit_employee_save"),
     path('delete_employee/<int:employee_id>/', HODViews.delete_employee, name="delete_employee"),
- 
 
+
+    path('admin_profile/', HODViews.admin_profile, name="admin_profile"),
+    path('admin_profile_update/', HODViews.admin_profile_update, name="admin_profile_update"),
+
+
+ # url manager
+
+   path('manager_profile/', ManagerViews.manager_profile, name="manager_profile"),
+   path('manager_home/', ManagerViews.manager_home, name="manager_home"),
+   path('liste_employee/', ManagerViews.liste_employee, name="liste_employee"),
+   path('conge_attente/', ManagerViews.conge_attente, name="conge_attente"),
+   
 ]

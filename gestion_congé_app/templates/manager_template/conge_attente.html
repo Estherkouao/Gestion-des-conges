@@ -1,17 +1,22 @@
-{% extends 'hod_template/base_template.html' %}
+<!DOCTYPE html>
+<html>
+<head>
+{% extends 'manager_template/base_template.html' %}
 
 {% block page_title %}
-    gére Employer
+   Demandes de conge en atente
 {% endblock page_title %}
 
 {% block main_content %}
 
 {% load static %}
 
+<h1>Bienvenue {{ manager.name }}</h1>
+   
+
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_employee' %}" role="button">+ Ajouter Employer</a> <br/>&nbsp;
             
             {% if messages %}
                                 <div class="form-group">
@@ -43,7 +48,7 @@
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">employee Details</h3>
+                            <h3 class="card-title">conge Details</h3>
 
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
@@ -59,48 +64,33 @@
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap">
                             <thead>
-                                <tr>
-                                <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>Gender</th>
-                                <th>Profile Pic</th>
-                                <th>manager</th>
-                                <th>Start Year</th>
-                                <th>End Year</th>
-                                <th>Last Login</th>
-                                <th>Date Joined</th>
-                                <th>Action</th>
+                                <tr> 
+                              <th>Employé</th>
+                              <th>Date de Début</th>
+                              <th>Date de Fin</th>
+                              <th>Type de Congé</th>
+                              <th>Statut</th>
+                              <th>Raison</th>
+                              <th>commentaire de manager</th>
+                   
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for employee in employees %}
-                                <tr>
-                                <td>{{ employee.admin.id }}</td>
-                                <td>{{ employee.admin.first_name }}</td>
-                                <td>{{ employee.admin.last_name }}</td>
-                                <td>{{ employee.admin.username }}</td>
-                                <td>{{ employee.admin.email }}</td>
-                                <td>{{ employee.address }}</td>
-                                <td>{{ employee.gender }}</td>
-                                <td> <img src="{{ employee.profile_pic }}" style="width: 100px;" /> </td>
-                                <td>{{ employee.department_id.department }}</td>
-                                <td>{{ employee.department_id.department }}</td>
-                                <td>{{ employee.course_id.course_name }}</td>
-                                <td>{{ employee.admin.last_login }}</td>
-                                <td>{{ employee.admin.date_joined }}</td>
-                                <td>
-                                    <a href="{% url 'edit_employee' employee.admin.id %}" class="btn btn-success">modifier</a> 
-                                    <a href="{% url 'delete_employee' employee.admin.id %}" class="btn btn-danger">suprimer</a>
-                                </td>
-                                </tr>
-                                {% endfor %}
-                                
+                                 {% for leave_request in leave_requests %}
+                                    <tr>
+                                         <td>{{ leave_request.employee_id.name }}</td>
+                                         <td>{{ leave_request.start_date }}</td>
+                                         <td>{{ leave_request.end_date }}</td>
+                                         <td>{{ leave_request.leave_type }}</td>
+                                         <td>{{ leave_request.status }}</td>
+                                         <td>{{ leave_request.reason }}</td>
+                                         
+                                    </tr>
+                                 {% endfor %}                   
                             </tbody>
+                           
                             </table>
+                            <a href="{% url 'manager_home' %}" class="btn btn-success">sommetre</a>
                         </div>
                         <!-- /.card-body -->
                         </div>
@@ -110,6 +100,20 @@
             </div>
 
         </div><!-- /.container-fluid -->
+
+             
+                    <!-- /.card -->
+
+                </div>
+            </div> 
+             
       </section>
 
+       <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Envoyer</button> 
+         </form>
+
   {% endblock main_content %}
+    

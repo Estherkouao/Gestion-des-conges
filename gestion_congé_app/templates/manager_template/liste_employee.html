@@ -1,7 +1,7 @@
-{% extends 'hod_template/base_template.html' %}
+{% extends 'manager_template/base_template.html' %}
 
 {% block page_title %}
-    gére Employer
+    liste Employer
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,7 +11,6 @@
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_employee' %}" role="button">+ Ajouter Employer</a> <br/>&nbsp;
             
             {% if messages %}
                                 <div class="form-group">
@@ -92,10 +91,6 @@
                                 <td>{{ employee.course_id.course_name }}</td>
                                 <td>{{ employee.admin.last_login }}</td>
                                 <td>{{ employee.admin.date_joined }}</td>
-                                <td>
-                                    <a href="{% url 'edit_employee' employee.admin.id %}" class="btn btn-success">modifier</a> 
-                                    <a href="{% url 'delete_employee' employee.admin.id %}" class="btn btn-danger">suprimer</a>
-                                </td>
                                 </tr>
                                 {% endfor %}
                                 
