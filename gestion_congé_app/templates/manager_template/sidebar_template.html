@@ -36,30 +36,37 @@
                 </p>
               </a>
             </li>
+              <!-- menu.html ou base_template.html -->
 
-            <li class="nav-item">
-              {% url 'liste_employee' as liste_employee %}
-              <a href="{{ liste_employee }}" class="nav-link {% if request.path == liste_employee %} active {% endif %}">
-                <i class="nav-icon fas fa-calendar-plus"></i>
-                <p>
-                  Liste employer
-                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
-                </p>
-              </a>
-            </li>
+           <!-- menu.html ou base_template.html -->
+          <li class="nav-item">
+            <a href="{% url 'liste_employee' manager_id=manager_id %}" class="nav-link {% if request.path == '/manager/'|add:manager_id|add:'/liste_employee' %} active {% endif %}">
+              <i class="nav-icon fas fa-calendar-plus"></i>
+              <p>
+                 Liste employé
+             </p>
+           </a>
+         </li>
 
-            
-            <li class="nav-item">
-              {% url 'conge_attente' as conge_attente %}
-              <a href="{{ conge_attente }}" class="nav-link {% if request.path == conge_attente %} active {% endif %}">
-                <i class="nav-icon fas fa-calendar-plus"></i>
-                <p>
-                  Congé en attente
-                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
-                </p>
-              </a>
-            </li>
 
+         <li class="nav-item">
+            <a href="{% url 'conge_attente' manager_id=manager_id %}" class="nav-link {% if request.path == '/manager/'|add:manager_id|add:'/conge_attente' %} active {% endif %}">
+              <i class="nav-icon fas fa-calendar-plus"></i>
+              <p>
+                   Congé en attente
+             </p>
+           </a>
+         </li>
+
+         
+         <li class="nav-item">
+            <a href="{% url 'leave_balance' manager_id=manager_id %}" class="nav-link {% if request.path == '/manager/'|add:manager_id|add:'/leave_balance' %} active {% endif %}">
+              <i class="nav-icon fas fa-calendar-plus"></i>
+              <p>
+                  Solde conge
+             </p>
+           </a>
+         </li>
 
           </ul>
         </nav>

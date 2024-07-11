@@ -1,119 +1,70 @@
-<!DOCTYPE html>
-<html>
-<head>
 {% extends 'manager_template/base_template.html' %}
 
 {% block page_title %}
-   Demandes de conge en atente
+    Soumissions de Congé des Employés sous la supervision de {{ manager.admin.username }}
 {% endblock page_title %}
 
 {% block main_content %}
-
+    
 {% load static %}
 
-<h1>Bienvenue {{ manager.name }}</h1>
-   
-
 <section class="content">
-        <div class="container-fluid">
-
-            
-            {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
-
-            <div class="row">
-
-                <div class="col-md-12">
-                    <!-- general form elements -->
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">conge Details</h3>
-
-                            <div class="card-tools">
-                            <div class="input-group input-group-sm" style="width: 150px;">
-                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
-
-                                <div class="input-group-append">
-                                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
-                                </div>
-                            </div>
-                            </div>
+    <div class="container-fluid">
+        
+        {% if messages %}
+            <div class="form-group">
+                <div class="col-12">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                            {{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
-                        <!-- /.card-header -->
-                        <div class="card-body table-responsive p-0">
-                            <table class="table table-hover text-nowrap">
-                            <thead>
-                                <tr> 
-                              <th>Employé</th>
-                              <th>Date de Début</th>
-                              <th>Date de Fin</th>
-                              <th>Type de Congé</th>
-                              <th>Statut</th>
-                              <th>Raison</th>
-                              <th>commentaire de manager</th>
-                   
-                                </tr>
-                            </thead>
-                            <tbody>
-                                 {% for leave_request in leave_requests %}
-                                    <tr>
-                                         <td>{{ leave_request.employee_id.name }}</td>
-                                         <td>{{ leave_request.start_date }}</td>
-                                         <td>{{ leave_request.end_date }}</td>
-                                         <td>{{ leave_request.leave_type }}</td>
-                                         <td>{{ leave_request.status }}</td>
-                                         <td>{{ leave_request.reason }}</td>
-                                         
-                                    </tr>
-                                 {% endfor %}                   
-                            </tbody>
-                           
-                            </table>
-                            <a href="{% url 'manager_home' %}" class="btn btn-success">sommetre</a>
-                        </div>
-                        <!-- /.card-body -->
-                        </div>
-                    <!-- /.card -->
-
+                    {% endfor %}
                 </div>
             </div>
+        {% endif %}
 
-        </div><!-- /.container-fluid -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Détails des demandes de congé</h3>
+                        <div class="card-tools">
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                                <div class="input-group-append">
+                                    <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body table-responsive p-0">
+                        <ul>
+                            {% for leave_request in leave_requests %}
+                                <li>
+                                    <h2>{{ leave_request.employee_id.name }} - {{ leave_request.start_date }} to {{ leave_request.end_date }}</h2>
+                                    <p>{{ leave_request.reason }}</p>
 
-             
-                    <!-- /.card -->
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
+                                        <input type="hidden" name="leave_request_id" value="{{ leave_request.id }}">
+                                        <button type="submit">Enregistrer commentaire</button>
+                                    </form>
 
+                                    {% if leave_request.manager_comment %}
+                                        <p>Commentaire du manager : {{ leave_request.manager_comment }}</p>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
-            </div> 
-             
-      </section>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
 
-       <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Envoyer</button> 
-         </form>
-
-  {% endblock main_content %}
-    
+{% endblock main_content %}

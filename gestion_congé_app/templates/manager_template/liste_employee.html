@@ -1,16 +1,17 @@
 {% extends 'manager_template/base_template.html' %}
 
 {% block page_title %}
-    liste Employer
+    Liste des employés
 {% endblock page_title %}
 
 {% block main_content %}
-
+   
 {% load static %}
+
+ <h1>Liste des employés sous la supervision du manager</h1>
 
 <section class="content">
         <div class="container-fluid">
-
             
             {% if messages %}
                                 <div class="form-group">
@@ -58,7 +59,7 @@
                         <div class="card-body table-responsive p-0">
                             <table class="table table-hover text-nowrap">
                             <thead>
-                                <tr>
+            <tr>
                                 <th>ID</th>
                                 <th>First Name</th>
                                 <th>Last Name</th>
@@ -67,17 +68,16 @@
                                 <th>Address</th>
                                 <th>Gender</th>
                                 <th>Profile Pic</th>
-                                <th>manager</th>
                                 <th>Start Year</th>
                                 <th>End Year</th>
                                 <th>Last Login</th>
                                 <th>Date Joined</th>
                                 <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for employee in employees %}
-                                <tr>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+                             <tr>
                                 <td>{{ employee.admin.id }}</td>
                                 <td>{{ employee.admin.first_name }}</td>
                                 <td>{{ employee.admin.last_name }}</td>
@@ -86,7 +86,6 @@
                                 <td>{{ employee.address }}</td>
                                 <td>{{ employee.gender }}</td>
                                 <td> <img src="{{ employee.profile_pic }}" style="width: 100px;" /> </td>
-                                <td>{{ employee.department_id.department }}</td>
                                 <td>{{ employee.department_id.department }}</td>
                                 <td>{{ employee.course_id.course_name }}</td>
                                 <td>{{ employee.admin.last_login }}</td>
@@ -108,3 +107,4 @@
       </section>
 
   {% endblock main_content %}
+

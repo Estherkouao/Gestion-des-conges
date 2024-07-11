@@ -1,0 +1,26 @@
+
+{% extends 'manager_template/base_template.html' %}
+
+{% block page_title %}
+    Solde de Congé
+{% endblock page_title %}
+
+{% block main_content %}
+    <h1>Solde de Congé des Employés sous la supervision de {{ manager.admin.username }}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Employé</th>
+                <th>Solde de Congé</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+                <tr>
+                    <td>{{ employee.admin.username }}</td>
+                    <td>{{ employee.leave_balance }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock main_content %}

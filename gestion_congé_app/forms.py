@@ -90,3 +90,12 @@ class EditEmployeeForm(forms.Form):
     # session_start_year = forms.DateField(label="Session Start", widget=DateInput(attrs={"class":"form-control"}))
     # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))
     profile_pic = forms.FileField(label="Profile Pic", required=False, widget=forms.FileInput(attrs={"class":"form-control"}))
+
+    
+from django import forms
+from .models import LeaveRequest
+
+class LeaveRequestCommentForm(forms.ModelForm):
+    class Meta:
+        model = LeaveRequest
+        fields = ['manager_comment']  # Champs que le manager peut commenter

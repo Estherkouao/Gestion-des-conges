@@ -51,10 +51,14 @@ urlpatterns = [
 
 
  # url manager
-
-   path('manager_profile/', ManagerViews.manager_profile, name="manager_profile"),
    path('manager_home/', ManagerViews.manager_home, name="manager_home"),
-   path('liste_employee/', ManagerViews.liste_employee, name="liste_employee"),
-   path('conge_attente/', ManagerViews.conge_attente, name="conge_attente"),
+   path('manager/<int:manager_id>/liste_employee', ManagerViews.liste_employee, name="liste_employee"),
+   path('manager/<int:manager_id>/conge_attente', ManagerViews.conge_attente, name="conge_attente"),
+   path('manager/<int:manager_id>/leave_balance', ManagerViews.leave_balance, name="leave_balance"),
+
+   
+   path('manager_profile/', ManagerViews.manager_profile, name="manager_profile"),
+   path('manager_profile_update/', ManagerViews.manager_profile_update, name="manager_profile_update"),
+   
    
 ]
