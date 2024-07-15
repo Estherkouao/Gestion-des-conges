@@ -60,5 +60,22 @@ urlpatterns = [
    path('manager_profile/', ManagerViews.manager_profile, name="manager_profile"),
    path('manager_profile_update/', ManagerViews.manager_profile_update, name="manager_profile_update"),
    
+
+    # url Rh
+   path('responsablerh_home/', HrViews.responsablerh_home, name="responsablerh_home"),
+   path('liste_employee_rh/', HrViews.liste_employee_rh, name="liste_employee_rh"),
+   path('conge_atente_rh/', HrViews.conge_atente_rh, name="conge_atente_rh"),
+   path('leave_balance_rh/', HrViews.leave_balance_rh, name="leave_balance_rh"),
    
+
+   path('responsablerh_profile/', HrViews.responsablerh_profile, name="responsablerh_profile"),
+   path('responsablerh_profile_update/', HrViews.responsablerh_profile_update, name="responsablerh_profile_update"),
+
+   # url Director
+   path('director_home/', DirectorViews.director_home, name="director_home"),
+   path('liste_employee_actif/', DirectorViews.liste_employee_actif, name="liste_employee_actif"),
+   path('liste_employee_nonActif/', DirectorViews.liste_employee_nonActif, name="liste_employee_nonActif"),
+
+   path('director_profile/', DirectorViews.director_profile, name="director_profile"),
+   path('director_profile_update/', DirectorViews.director_profile_update, name="director_profile_update"),
 ]

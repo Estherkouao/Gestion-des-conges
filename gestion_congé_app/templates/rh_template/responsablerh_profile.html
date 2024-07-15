@@ -1,4 +1,4 @@
-{% extends 'manager_template/base_template.html' %}
+{% extends 'rh_template/base_template.html' %}
 
 {% block page_title %}
     mise a jour Profile
@@ -20,7 +20,7 @@
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" method="POST" action="{% url 'manager_profile_update' %}">
+                    <form role="form" method="POST" action="{% url 'responsablerh_profile_update' %}">
                         {% csrf_token %}
 
                         
@@ -73,7 +73,7 @@
 
                             <div class="form-group">
                                 <label>Address </label>
-                                <textarea name="address" class="form-control" row="5">{{ manager.address }}</textarea>
+                                <textarea name="address" class="form-control" row="5">{{ responsablerh.address }}</textarea>
                             </div>
 
                             <div class="form-group">

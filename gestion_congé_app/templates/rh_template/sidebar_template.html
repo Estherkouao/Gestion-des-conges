@@ -1,0 +1,71 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+      
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="{% url 'responsablerh_profile' %}" class="d-block">{{ user.first_name }} {{ user.last_name }}</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+
+            <li class="nav-item">
+              {% url 'responsablerh_home' as responsablerh_home %}
+              <a href="{{ responsablerh_home }}" class="nav-link {% if request.path == responsablerh_home %} active {% endif %}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Accueil
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'liste_employee_rh' as liste_employee_rh %}
+              <a href="{{ liste_employee_rh }}" class="nav-link {% if request.path == liste_employee_rh %} active {% endif %} {% if request.path == liste_employee_rh %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  Liste des employé
+                </p>
+              </a>
+            </li>
+            
+           <li class="nav-item">
+              {% url 'conge_atente_rh' as conge_atente_rh %}
+              <a href="{{ conge_atente_rh }}" class="nav-link {% if request.path == conge_atente_rh %} active {% endif %} {% if request.path == conge_atente_rh %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  Conge_atente_rh
+                </p>
+              </a>
+            </li>
+
+             
+            <li class="nav-item">
+              {% url 'leave_balance_rh' as leave_balance_rh %}
+              <a href="{{ leave_balance_rh }}" class="nav-link {% if request.path == leave_balance_rh %} active {% endif %} {% if request.path == leave_balance_rh %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  Solde conge
+                </p>
+              </a>
+            </li>
+            
+
+
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>

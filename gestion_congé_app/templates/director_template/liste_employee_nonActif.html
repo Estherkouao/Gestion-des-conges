@@ -1,0 +1,32 @@
+{% extends 'director_template/base_template.html' %}
+
+{% block page_title %}
+    Liste des employés en Congé
+{% endblock page_title %}
+
+{% block main_content %}
+   
+{% load static %}
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom </th>
+                <th>Département </th>
+                <th>Date de début </th>
+                <th>Date de fin </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees_on_leave %}
+            <tr>
+                <td>{{ employee.admin.get_full_name }}</td>
+                <td>{{ employee.department_id.name }}</td>
+                <td>{{ employee.leaverequest_set.first.start_date }}</td>
+                <td>{{ employee.leaverequest_set.first.end_date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+{% endblock main_content %}

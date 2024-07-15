@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
         ("4", "Director"),
         ("5", "HOD"),
     )
-    user_type = models.CharField(default="2", choices=USER_TYPE_CHOICES, max_length=150)
+    user_type = models.CharField(default="4", choices=USER_TYPE_CHOICES, max_length=150)
 
 class AdminHOD(models.Model):
     id = models.AutoField(primary_key=True)

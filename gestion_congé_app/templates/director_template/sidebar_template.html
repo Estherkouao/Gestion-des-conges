@@ -1,0 +1,58 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+      
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+          </div>
+          <div class="info">
+            <a href="{% url 'director_profile' %}" class="d-block">{{ user.first_name }} {{ user.last_name }}</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+
+            <li class="nav-item">
+              {% url 'director_home' as director_home %}
+              <a href="{{ director_home }}" class="nav-link {% if request.path == director_home %} active {% endif %}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Accueil
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'liste_employee_actif' as liste_employee_actif %}
+              <a href="{{ liste_employee_actif }}" class="nav-link {% if request.path == liste_employee_actif %} active {% endif %} {% if request.path == liste_employee_actif %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  Liste des employés actif
+                </p>
+              </a>
+            </li>
+            
+           <li class="nav-item">
+              {% url 'liste_employee_nonActif' as liste_employee_nonActif %}
+              <a href="{{ liste_employee_nonActif }}" class="nav-link {% if request.path == liste_employee_nonActif %} active {% endif %} {% if request.path == liste_employee_nonActif %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  liste des employes non actif
+                </p>
+              </a>
+            </li>
+
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>

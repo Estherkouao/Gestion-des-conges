@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import LeaveRequestCommentForm
+from datetime import date
 
 from gestion_congé_app.models import (
     CustomUser, Responsablerhs, Directors, Managers, Department, Employees, LeaveRequest,AttendanceReport
@@ -14,7 +15,6 @@ from gestion_congé_app.models import (
 
 def manager_home(request):
     manager = get_object_or_404(Managers, admin=request.user)
-#  subjects = Subjects.objects.filter(staff_id=request.user.id)
 
     
     
@@ -63,9 +63,23 @@ def liste_employee(request, manager_id):
     manager = get_object_or_404(Managers, id=manager_id)
     employees = Employees.objects.filter(manager_id=manager)
 
+    today = date.today()
+
+    employees_status = []
+
+    for employee in employees:
+        leave_requests = LeaveRequest.objects.filter(employee=employee, status='Approved', start_date__lte=today, end_date__gte=today)
+        on_leave = leave_requests.exists()
+
+    # employees_status.append({
+    #         'employee': employee,
+    #         'on_leave': on_leave
+    #     })
+
     context = {
         'manager_id': manager_id,
-        'employees': employees
+        'employees': employees,
+        'employees_status': employees_status
     }
     return render(request, 'manager_template/liste_employee.html', context)
 
@@ -85,6 +99,27 @@ def conge_attente(request, manager_id):
             leave_request.manager_comment = form.cleaned_data['manager_comment']
             leave_request.save()
             # Redirection ou autre logique après sauvegarde
+            leave_requests = LeaveRequest.objects.filter(manager=request.user.manager)
+
+    if request.method == 'POST':
+        leave_request_id = request.POST.get('leave_request_id')
+        action = request.POST.get('action')
+        leave_request = get_object_or_404(LeaveRequest, id=leave_request_id)
+
+        if action == 'approve':
+            leave_request.status = 'approved'
+            messages.success(request, f"La demande de congé de {leave_request.employee_id.name} a été approuvée.")
+        elif action == 'reject':
+            leave_request.status = 'rejected'
+            messages.success(request, f"La demande de congé de {leave_request.employee_id.name} a été rejetée.")
+
+        # Save the manager's comment if there is one
+        form = LeaveRequestCommentForm(request.POST, instance=leave_request)
+        if form.is_valid():
+            form.save()
+
+        leave_request.save()
+        return redirect('conge_attente')
 
     else:
         form = LeaveRequestCommentForm()
@@ -95,6 +130,7 @@ def conge_attente(request, manager_id):
          'form': form,
     }
     return render(request, 'manager_template/conge_attente.html', context)
+
 
 def leave_balance(request, manager_id):
     manager = get_object_or_404(Managers, id=manager_id)

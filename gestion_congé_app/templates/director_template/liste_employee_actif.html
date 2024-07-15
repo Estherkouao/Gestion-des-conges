@@ -1,0 +1,30 @@
+{% extends 'director_template/base_template.html' %}
+
+{% block page_title %}
+    Employés Non en Congé
+{% endblock page_title %}
+
+{% block main_content %}
+   
+{% load static %}
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom </th>
+                <br>
+                <th>Département</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees_not_on_leave %}
+            <tr>
+                <td>{{ employee.admin.get_full_name }}</td>
+                <td>{{ employee.department_id.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+{% endblock main_content %}
+

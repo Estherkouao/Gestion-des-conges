@@ -99,3 +99,9 @@ class LeaveRequestCommentForm(forms.ModelForm):
     class Meta:
         model = LeaveRequest
         fields = ['manager_comment']  # Champs que le manager peut commenter
+
+
+class LeaveRequestCommentrhForm(forms.ModelForm):
+    class Meta:
+        model = LeaveRequest
+        fields = ['hr_comment']  # Champs que le RH peut commenter

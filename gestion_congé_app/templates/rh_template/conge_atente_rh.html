@@ -1,7 +1,7 @@
-{% extends 'manager_template/base_template.html' %}
+{% extends 'rh_template/base_template.html' %}
 
 {% block page_title %}
-    Soumissions de Congé des Employés sous la supervision de {{ manager.admin.username }}
+    Soumissions de Congé des Employés
 {% endblock page_title %}
 
 {% block main_content %}
@@ -47,7 +47,7 @@
                                     <h2>{{ leave_request.employee_id.name }} - {{ leave_request.start_date }} to {{ leave_request.end_date }}</h2>
                                     <p>{{ leave_request.reason }}</p>
 
-                                    <form method="post">
+                                    <form method="post" action="conge_atente_rh">
                                         {% csrf_token %}
                                         {{ form.as_p }}
                                         <input  type="hidden" name="leave_request_id" value="{{ leave_request.id }}">
@@ -57,8 +57,8 @@
                                         <button type="submit">Enregistrer commentaire</button>
                                     </form>
 
-                                    {% if leave_request.manager_comment %}
-                                        <p>Commentaire du manager : {{ leave_request.manager_comment }}</p>
+                                    {% if leave_request.hr_comment %}
+                                        <p>Commentaire du responsablerh : {{ leave_request.hr_comment }}</p>
                                     {% endif %}
                                 </li>
                             {% endfor %}
