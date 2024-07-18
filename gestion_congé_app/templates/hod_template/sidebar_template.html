@@ -1,6 +1,12 @@
 {% load static %}
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="{% url 'manager_home' %}" class="brand-link">
+        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">
+        <span class="brand-text font-weight-light">dashboard Admin</span>
+      </a>
       
       <!-- Sidebar -->
       <div class="sidebar">
@@ -95,6 +101,28 @@
               </a>
             </li>
 
+            
+            <li class="nav-item">
+              {% url 'manage_department' as manage_department %}
+              {% url 'edit_department' department_id=id as edit_department %}
+              <a href="{{ manage_department }}" class="nav-link {% if request.path == manage_department %} active {% endif %} {% if request.path == edit_department %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  Liste Departement
+                </p>
+              </a>
+            </li>
+            
+            <li class="nav-item">
+              {% url 'add_department' as add_department %}
+              <a href="{{ add_department }}" class="nav-link {% if request.path == add_department %} active {% endif %}">
+                <i class="nav-icon fas fa-th"></i>
+                <p>
+                  Ajouter Departement
+                </p>
+              </a>
+            </li>
+
 
             <li class="nav-item">
               {% url 'manage_employee' as manage_employee %}
@@ -116,6 +144,7 @@
                 </p>
               </a>
             </li>
+
 
 
           </ul>

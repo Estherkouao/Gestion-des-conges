@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Edit Employer | Username: {{ username }} | #ID : {{ id }}
+    Modifier Employee | Username: {{ username }} | #ID : {{ id }}
 {% endblock page_title %}
 
 {% block main_content %}
@@ -9,28 +9,32 @@
 {% load static %}
 
 <section class="content">
-        <div class="container-fluid">
-
-            <div class="row">
-                <div class="col-md-12">
-                    <!-- general form elements -->
-                    <div class="card card-primary">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">Edit Student</h3>
+                        <h3 class="card-title">Modifier employee</h3>
                     </div>
                     <!-- /.card-header -->
-                    <!-- form start -->
-                    {% comment %} Displaying the Django Form using forms.py EditStudentForm {% endcomment %}
-                    {% url 'edit_employee_save' as action_path %}
-                    {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_path button_text="metre a jour Employer" %}
-
+                    <div class="card-body">
+                        <!-- Form for editing employee details -->
+                        <form method="post" action="{% url 'edit_employee_save' %}">
+                            {% csrf_token %}
+                            <!-- Hidden input to pass employee ID -->
+                            <input type="hidden" name="employee_id" value="{{ id }}">
+                            
+                            <!-- Include form fields using form_template.html -->
+                            {% url 'edit_employee_save' as action_url %}
+                            {% include 'hod_template/form_template.html' with messages=messages form=form action_path=action_url button_text="Mettre à jour Employee" %}
+                        </form>
                     </div>
-                    <!-- /.card -->
-
                 </div>
+                <!-- /.card -->
             </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
 
-        </div><!-- /.container-fluid -->
-      </section>
-
-  {% endblock main_content %}
+{% endblock main_content %}

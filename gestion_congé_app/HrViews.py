@@ -14,7 +14,13 @@ from gestion_congé_app.models import (
 )
 
 def responsablerh_home(request):
-    responsablerh = get_object_or_404(Responsablerhs, admin=request.user)  
+    
+    try:
+        responsablerh = Responsablerhs.objects.get(admin=request.user)
+    except Responsablerhs.DoesNotExist:
+        return HttpResponse("Vous n'êtes pas autorisé à accéder à cette page.")
+    responsablerh = get_object_or_404(Responsablerhs, admin=request.user) 
+
     all_employee_count = Employees.objects.all().count()
     all_conge_atente_count = LeaveRequest.objects.all().count()
     all_leave_balance_count = Employees.objects.all().count()
@@ -40,7 +46,7 @@ def liste_employee_rh(request):
     for employee in employees:
         leave_requests = LeaveRequest.objects.filter(
             employee_id=employee, 
-            status__in=['Approved by Manager', 'Approved by Responsablerh', 'Approved by Director'],
+            status__in=['Approved by Manager', 'Approved by Responsablerh'],
             start_date__lte=today, 
             end_date__gte=today
         )

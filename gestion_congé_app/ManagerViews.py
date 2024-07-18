@@ -14,6 +14,11 @@ from gestion_congé_app.models import (
 
 
 def manager_home(request):
+      # Vérifiez si l'utilisateur connecté est un manager
+    try:
+        manager = Managers.objects.get(admin=request.user)
+    except Managers.DoesNotExist:
+        return HttpResponse("Vous n'êtes pas autorisé à accéder à cette page.")
     manager = get_object_or_404(Managers, admin=request.user)
 
     
@@ -42,11 +47,8 @@ def manager_home(request):
         "all_conge_atente_count": all_conge_atente_count,
         "manager_id": manager.id,
         "all_leave_balance_count":all_leave_balance_count,
-        #  "all_leave_count": all_leave_count,
-        # "attendance_list": employee_list,
-        # "student_list": employee_list,
-        # "attendance_present_list": employee_list_attendance_present,
-        # "attendance_absent_list": employee_list_attendance_absent
+        'manager': manager,
+
     }
     return render(request, "manager_template/manager_home.html", context)
 
@@ -58,30 +60,44 @@ def manager_home(request):
 #     return render(request, 'manager_template/manager_home.html', context)
     
 
+from datetime import date
+import logging
+logger = logging.getLogger(__name__)
 
 def liste_employee(request, manager_id):
+    logger.debug(f"Requête pour le manager avec ID: {manager_id}")
     manager = get_object_or_404(Managers, id=manager_id)
-    employees = Employees.objects.filter(manager_id=manager)
-
+    logger.debug(f"Manager trouvé: {manager}")
+    
+    employees = Employees.objects.filter(manager_id=manager.id)
+    logger.debug(f"Nombre d'employés trouvés: {employees.count()}")
+    
     today = date.today()
-
     employees_status = []
 
     for employee in employees:
-        leave_requests = LeaveRequest.objects.filter(employee=employee, status='Approved', start_date__lte=today, end_date__gte=today)
+        logger.debug(f"Traitement de l'employé: {employee.admin.first_name} {employee.admin.last_name} (ID: {employee.id})")
+        leave_requests = LeaveRequest.objects.filter(
+            employee_id=employee.id, 
+            status='Approved', 
+            start_date__lte=today, 
+            end_date__gte=today
+        )
         on_leave = leave_requests.exists()
-
-    # employees_status.append({
-    #         'employee': employee,
-    #         'on_leave': on_leave
-    #     })
+        employees_status.append({
+            'employee': employee,
+            'on_leave': on_leave
+        })
+        logger.debug(f"Statut de l'employé {employee.id}: {'En congé' if on_leave else 'Présent'}")
 
     context = {
+        'manager': manager,
         'manager_id': manager_id,
-        'employees': employees,
-        'employees_status': employees_status
+        'employees_status': employees_status,
     }
+    logger.debug(f"Contexte passé au template: {context}")
     return render(request, 'manager_template/liste_employee.html', context)
+
 
 
 def conge_attente(request, manager_id):
@@ -145,12 +161,14 @@ def leave_balance(request, manager_id):
 
 
 def manager_profile(request):
-    user = CustomUser.objects.get(id=request.user.id)
-    manager = Managers.objects.get(admin=user)
+    user = get_object_or_404(CustomUser, id=request.user.id)
+    manager = get_object_or_404(Managers, admin=user)
+    manager_id = manager.id
 
     context={
         "user": user,
         "manager": manager,
+        "manager_id": manager_id,
     }
     return render(request, 'manager_template/manager_profile.html', context)
 
@@ -177,7 +195,7 @@ def manager_profile_update(request):
             manager.address = address
             manager.save()
 
-            messages.success(request, "Profile Updated Successfully")
+            messages.success(request, "Profil mis a jour avec succes")
             return redirect('manager_profile')
         except:
             messages.error(request, "Failed to Update Profile")

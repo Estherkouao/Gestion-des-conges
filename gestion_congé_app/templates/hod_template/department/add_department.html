@@ -1,0 +1,68 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+    Ajouter Département
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- général éléments de formulaire -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Ajouter Département</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <!-- début du formulaire -->
+                    <form role="form" method="POST" action="{% url 'add_department_save' %}">
+                        {% csrf_token %}
+                        <!-- Afficher les messages -->
+                        {% if messages %}
+                            <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                        {% if message.tags == "error" %}
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                                {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        {% elif message.tags == "success" %}
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                                {{ message }}
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label>Nom du Département</label>
+                                <input type="text" class="form-control" name="department" placeholder="Entrez le nom du département" required>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Ajouter Département</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card -->
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}

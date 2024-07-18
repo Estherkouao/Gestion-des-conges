@@ -14,6 +14,15 @@ urlpatterns = [
     path('check_email_exist/', HODViews.check_email_exist, name="check_email_exist"),
     path('check_username_exist/', HODViews.check_username_exist, name="check_username_exist"),
 
+
+    path('add_department/', HODViews.add_department, name="add_department"),
+    path('add_department_save/', HODViews.add_department_save, name="add_department_save"),
+    path('manage_department/', HODViews.manage_department, name="manage_department"),
+    path('edit_department/<int:department_id>/', HODViews.edit_department, name="edit_department"),
+    path('edit_department_save/', HODViews.edit_department_save, name="edit_department_save"),
+    path('delete_department/<int:department_id>/', HODViews.delete_department, name="delete_department"),
+   
+
     path('add_manager/', HODViews.add_manager, name="add_manager"),
     path('add_manager_save/', HODViews.add_manager_save, name="add_manager_save"),
     path('manage_manager/', HODViews.manage_manager, name="manage_manager"),
@@ -73,8 +82,7 @@ urlpatterns = [
 
    # url Director
    path('director_home/', DirectorViews.director_home, name="director_home"),
-   path('liste_employee_actif/', DirectorViews.liste_employee_actif, name="liste_employee_actif"),
-   path('liste_employee_nonActif/', DirectorViews.liste_employee_nonActif, name="liste_employee_nonActif"),
+   path('liste_des_employee/', DirectorViews.liste_des_employee, name="liste_des_employee"),
 
    path('director_profile/', DirectorViews.director_profile, name="director_profile"),
    path('director_profile_update/', DirectorViews.director_profile_update, name="director_profile_update"),

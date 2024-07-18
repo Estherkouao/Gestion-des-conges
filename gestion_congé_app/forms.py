@@ -2,7 +2,6 @@ from django import forms
 from django.forms import Form
 from gestion_congé_app.models import Managers, Department
 
-
 class DateInput(forms.DateInput):
     input_type = "date"
 
@@ -14,41 +13,31 @@ class AddEmployeeForm(forms.Form):
     last_name = forms.CharField(label="Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    gender_list = (('Male','Male'),('Female','Female'))
 
-    #For Displaying Courses
-    try:
-        managers = Managers.objects.all()
-        manager_list = []
-        for manager in managers:
-            single_manager = (manager.id, manager.manager_name)
-            manager_list.append(single_manager)
-    except:
-        manager_list = []
-    
-    #For Displaying Session Years
-    try:
-        departments = Department.objects.all()
-        department_list = []
-        for department in departments:
-            single_department = (department.id, str(department.department)+" to "+str(department.department))
-            department_list.append(single_department)
-            
-    except:
-        department_list = []
-    
-    gender_list = (
-        ('Male','Male'),
-        ('Female','Female')
-    )
-    
-    manager_id = forms.ChoiceField(label="manager", choices=manager_list, widget=forms.Select(attrs={"class":"form-control"}))
+    manager_id = forms.ChoiceField(label="Manager", choices=[], widget=forms.Select(attrs={"class":"form-control"}))
     gender = forms.ChoiceField(label="Gender", choices=gender_list, widget=forms.Select(attrs={"class":"form-control"}))
-    department_id = forms.ChoiceField(label="department", choices=department_list, widget=forms.Select(attrs={"class":"form-control"}))
-    # session_start_year = forms.DateField(label="Session Start", widget=DateInput(attrs={"class":"form-control"}))
-    # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))
+    department_id = forms.ChoiceField(label="Department", choices=[], widget=forms.Select(attrs={"class":"form-control"}))
     profile_pic = forms.FileField(label="Profile Pic", required=False, widget=forms.FileInput(attrs={"class":"form-control"}))
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['manager_id'].choices = self.get_manager_choices()
+        self.fields['department_id'].choices = self.get_department_choices()
 
+    def get_manager_choices(self):
+        try:
+            managers = Managers.objects.all()
+            return [(manager.id, f"{manager.admin.first_name} {manager.admin.last_name}") for manager in managers]
+        except Managers.DoesNotExist:
+            return []
+
+    def get_department_choices(self):
+        try:
+            departments = Department.objects.all()
+            return [(department.id, department.name) for department in departments]
+        except Department.DoesNotExist:
+            return []
 
 class EditEmployeeForm(forms.Form):
     email = forms.EmailField(label="Email", max_length=50, widget=forms.EmailInput(attrs={"class":"form-control"}))
@@ -56,40 +45,31 @@ class EditEmployeeForm(forms.Form):
     last_name = forms.CharField(label="Last Name", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     username = forms.CharField(label="Username", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
     address = forms.CharField(label="Address", max_length=50, widget=forms.TextInput(attrs={"class":"form-control"}))
+    gender_list = (('Male','Male'),('Female','Female'))
 
-    #For Displaying manager
-    try:
-        managers = Managers.objects.all()
-        manager_list = []
-        for manager in managers:
-            single_manager = (manager.id, manager.manager_name)
-            manager_list.append(single_manager)
-    except:
-        manager_list = []
-
-    #For Displaying Session Years
-    try:
-        departments = Department.objects.all()
-        department_list = []
-        for department in departments:
-            single_department = (department.id, str(department.department)+" to "+str(department.department_end))
-            department_list.append(single_department)
-            
-    except:
-        department_list = []
-
-    
-    gender_list = (
-        ('Male','Male'),
-        ('Female','Female')
-    )
-    
-    manager_id = forms.ChoiceField(label="manager", choices=manager_list, widget=forms.Select(attrs={"class":"form-control"}))
+    manager_id = forms.ChoiceField(label="Manager", choices=[], widget=forms.Select(attrs={"class":"form-control"}))
     gender = forms.ChoiceField(label="Gender", choices=gender_list, widget=forms.Select(attrs={"class":"form-control"}))
-    department_id = forms.ChoiceField(label="departement", choices=department_list, widget=forms.Select(attrs={"class":"form-control"}))
-    # session_start_year = forms.DateField(label="Session Start", widget=DateInput(attrs={"class":"form-control"}))
-    # session_end_year = forms.DateField(label="Session End", widget=DateInput(attrs={"class":"form-control"}))
+    department_id = forms.ChoiceField(label="Department", choices=[], widget=forms.Select(attrs={"class":"form-control"}))
     profile_pic = forms.FileField(label="Profile Pic", required=False, widget=forms.FileInput(attrs={"class":"form-control"}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['manager_id'].choices = self.get_manager_choices()
+        self.fields['department_id'].choices = self.get_department_choices()
+
+    def get_manager_choices(self):
+        try:
+            managers = Managers.objects.all()
+            return [(manager.id, f"{manager.admin.first_name} {manager.admin.last_name}") for manager in managers]
+        except Managers.DoesNotExist:
+            return []
+
+    def get_department_choices(self):
+        try:
+            departments = Department.objects.all()
+            return [(department.id, department.name) for department in departments]
+        except Department.DoesNotExist:
+            return []
 
     
 from django import forms

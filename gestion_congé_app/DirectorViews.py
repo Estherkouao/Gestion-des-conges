@@ -5,20 +5,32 @@ from django.core.files.storage import FileSystemStorage
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import date
+from django.shortcuts import render, get_object_or_404, redirect
 
 from gestion_congé_app.models import (
-    CustomUser, Responsablerhs, Directors, Managers, Department, Employees
+    CustomUser, Responsablerhs, Directors, Managers, Department, Employees,LeaveRequest
 )
 
 def director_home(request):
-    all_employee_actif_count = Employees.objects.all().count()
-    all_employee_nonActif_count = Employees.objects.all().count()
 
-    context={
-        "all_employee_actif_count": all_employee_actif_count,
-        "all_employee_nonActif_count": all_employee_nonActif_count,
+    try:
+        director = Directors.objects.get(admin=request.user)
+    except Directors.DoesNotExist:
+        return HttpResponse("Vous n'êtes pas autorisé à accéder à cette page.")
+
+    all_employee_count = Employees.objects.all().count()
+
+    context = {
+        "all_employee_count": all_employee_count,
+        "director_id": director.id,
     }
+
+    # Debugging
+    print(f"all_employee_count: {all_employee_count}")
+    print(f"director_id: {director.id}")
+
     return render(request, "director_template/director_home.html", context)
+
 
 def director_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
@@ -27,6 +39,7 @@ def director_profile(request):
     context={
         "user": user,
         "director": director,
+        "director_id": director.id,
     }
     return render(request, 'director_template/director_profile.html', context)
 
@@ -61,33 +74,33 @@ def director_profile_update(request):
         
 
         
-def liste_employee_actif(request):
-    today = date.today()
-    liste_employee_actif = Employees.objects.filter(
-        leaverequest__status__in=['Approved by Manager', 'Approved by Responsablerh', 'Approved by Director'],
-        leaverequest__start_date__lte=today,
-        leaverequest__end_date__gte=today
-    ).distinct()
-    liste_employee_actif = Employees.objects.exclude(id__in=liste_employee_actif.values_list('id', flat=True))
+def liste_des_employee(request):
+   employees = Employees.objects.all()
+   today = date.today()
 
-    context = {
-        "liste_employee_actif": liste_employee_actif
+   employees_on_leave = []
+   employees_not_on_leave = []
+
+   for employee in employees:
+        leave_requests = LeaveRequest.objects.filter(
+            employee_id=employee, 
+            status__in=['Approved by Manager', 'Approved by Responsablerh'],
+            start_date__lte=today, 
+            end_date__gte=today
+        )
+        on_leave = leave_requests.exists()
+
+        if on_leave:
+            employees_on_leave.append(employee)
+        else:
+            employees_not_on_leave.append(employee)
+
+   context = {
+        "employees_on_leave": employees_on_leave,
+        "employees_not_on_leave": employees_not_on_leave
     }
-    return render(request, 'director_template/liste_employee_actif.html', context)
+   return render(request, 'director_template/liste_des_employee.html', context)
 
 
 
-
-def liste_employee_nonActif(request):
-    today = date.today()
-    liste_employee_nonActif = Employees.objects.filter(
-        leaverequest__status__in=['Approved by Manager', 'Approved by Responsablerh', 'Approved by Director'],
-        leaverequest__start_date__lte=today,
-        leaverequest__end_date__gte=today
-    ).distinct()
-
-    context = {
-        "liste_employee_nonActif": liste_employee_nonActif
-    }
-    return render(request, 'director_template/liste_employee_nonActif.html', context)
 

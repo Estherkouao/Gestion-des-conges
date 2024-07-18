@@ -1,6 +1,12 @@
 {% load static %}
 
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="{% url 'manager_home' %}" class="brand-link">
+        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">
+        <span class="brand-text font-weight-light">dashboard Directeur</span>
+      </a>
       
       <!-- Sidebar -->
       <div class="sidebar">
@@ -31,21 +37,11 @@
             </li>
 
             <li class="nav-item">
-              {% url 'liste_employee_actif' as liste_employee_actif %}
-              <a href="{{ liste_employee_actif }}" class="nav-link {% if request.path == liste_employee_actif %} active {% endif %} {% if request.path == liste_employee_actif %} active {% endif %}">
+              {% url 'liste_des_employee' as liste_des_employee %}
+              <a href="{{ liste_des_employee }}" class="nav-link {% if request.path == liste_des_employee %} active {% endif %} {% if request.path == liste_des_employee %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
-                  Liste des employés actif
-                </p>
-              </a>
-            </li>
-            
-           <li class="nav-item">
-              {% url 'liste_employee_nonActif' as liste_employee_nonActif %}
-              <a href="{{ liste_employee_nonActif }}" class="nav-link {% if request.path == liste_employee_nonActif %} active {% endif %} {% if request.path == liste_employee_nonActif %} active {% endif %}">
-                <i class="nav-icon fas fa-chalkboard-teacher"></i>
-                <p>
-                  liste des employes non actif
+                  Liste des employés 
                 </p>
               </a>
             </li>

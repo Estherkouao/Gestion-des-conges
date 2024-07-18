@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
         ("4", "Director"),
         ("5", "HOD"),
     )
-    user_type = models.CharField(default="4", choices=USER_TYPE_CHOICES, max_length=150)
+    user_type = models.CharField(default="2", choices=USER_TYPE_CHOICES, max_length=150)
 
 class AdminHOD(models.Model):
     id = models.AutoField(primary_key=True)
@@ -46,9 +46,12 @@ class Managers(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
+    def __str__(self):
+        return f"{self.admin.first_name} {self.admin.last_name}"
+
 class Department(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
@@ -61,11 +64,13 @@ class Employees(models.Model):
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     manager_id = models.ForeignKey(Managers, on_delete=models.SET_NULL, null=True, blank=True, related_name='employees')
     department_id = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
+    address = models.CharField(max_length=255)  # Ajout du champ address
+    gender = models.CharField(max_length=10)  # Ajout du champ gender
+    profile_pic = models.CharField(max_length=255, null=True, blank=True)  # Ajout du champ profile_pic
+    leave_balance = models.IntegerField(default=30)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
-
-    leave_balance = models.IntegerField(default=30)
 
     def reduce_leave_balance(self, days):
         if self.leave_balance >= days:
@@ -73,6 +78,7 @@ class Employees(models.Model):
             self.save()
         else:
             raise ValueError("Insufficient leave balance")
+
         
 
         
@@ -90,8 +96,6 @@ class LeaveRequest(models.Model):
         ('Rejected by Manager', 'Rejected by Manager'),
         ('Approved by Responsablerh', 'Approved by Rresponsablerh'),
         ('Rejected by Responsablerh', 'Rejected by Rresponsablerh'),
-        ('Approved by Director', 'Approved by Director'),
-        ('Rejected by Director', 'Rejected by Director'),
     )
     employee_id = models.ForeignKey(Employees, on_delete=models.CASCADE)
     start_date = models.DateField()
@@ -101,7 +105,6 @@ class LeaveRequest(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     manager_comment = models.TextField(blank=True, null=True)
     hr_comment = models.TextField(blank=True, null=True)
-    director_comment = models.TextField(blank=True, null=True)
 
     @property
     def leave_days(self):

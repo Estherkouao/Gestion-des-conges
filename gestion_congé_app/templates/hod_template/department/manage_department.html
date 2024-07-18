@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    gére Employer
+    Ajouter Departement
 {% endblock page_title %}
 
 {% block main_content %}
@@ -11,8 +11,8 @@
 <section class="content">
         <div class="container-fluid">
 
-            <a class="btn btn-primary" href="{% url 'add_employee' %}" role="button">+ Ajouter Employer</a> <br/>&nbsp;
-            
+            <a class="btn btn-primary" href="{% url 'add_department' %}" role="button">+ Ajouter Departement</a> <br/>&nbsp;
+
             {% if messages %}
                                 <div class="form-group">
                                 <div class="col-12">
@@ -38,12 +38,11 @@
                                 {% endif %}
 
             <div class="row">
-
                 <div class="col-md-12">
                     <!-- general form elements -->
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">employee Details</h3>
+                            <h3 class="card-title">Departement Details</h3>
 
                             <div class="card-tools">
                             <div class="input-group input-group-sm" style="width: 150px;">
@@ -61,38 +60,22 @@
                             <thead>
                                 <tr>
                                 <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Address</th>
-                                <th>Gender</th>
-                                <th>Photo de profil</th>
-                                <th>Manager</th>
-                                <th>Departement</th>
-                                <th>Dernière Connexion</th>
-                                <th>Date d'Inscription</th>
+                                <th>department Name</th>
+                                <th>Created At</th>
+                                <th>Updated At</th>
                                 <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for employee in employees %}
+                                {% for department in departments %}
                                 <tr>
-                                <td>{{ employee.admin.id }}</td>
-                                <td>{{ employee.admin.first_name }}</td>
-                                <td>{{ employee.admin.last_name }}</td>
-                                <td>{{ employee.admin.username }}</td>
-                                <td>{{ employee.admin.email }}</td>
-                                <td>{{ employee.address }}</td>
-                                <td>{{ employee.gender }}</td>
-                                <td> <img src="{{ employee.profile_pic }}" style="width: 100px;" /> </td>
-                                <td>{{ employee.manager_id.admin.get_full_name }}</td>
-                                <td>{{ employee.department_id.name }}</td>
-                                <td>{{ employee.admin.last_login }}</td>
-                                <td>{{ employee.admin.date_joined }}</td>
+                                <td>{{ department.id }}</td>
+                                <td>{{ department.name }}</td>
+                                <td>{{ department.created_at }}</td>
+                                <td>{{ department.updated_at }}</td>
                                 <td>
-                                    <a href="{% url 'edit_employee' employee.admin.id %}" class="btn btn-success">modifier</a> 
-                                    <a href="{% url 'delete_employee' employee.admin.id %}" class="btn btn-danger">suprimer</a>
+                                    <a href="{% url 'edit_department' department.id %}" class="btn btn-success">Modifier</a> 
+                                    <a href="{% url 'delete_department' department.id %}" class="btn btn-danger">Effacer</a>
                                 </td>
                                 </tr>
                                 {% endfor %}

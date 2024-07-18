@@ -33,6 +33,86 @@ def check_username_exist(request):
         return HttpResponse(True)
     else:
         return HttpResponse(False)
+    
+def add_department(request):
+    return render(request, "hod_template/department/add_department.html")
+
+def add_department_save(request):
+    if request.method != "POST":
+        messages.error(request, "Méthode invalide !")
+        return redirect('add_department')
+    else:
+        name = request.POST.get('department')
+        if not name:
+            messages.error(request, "Le nom du département ne peut pas être vide !")
+            return redirect('add_department')
+
+        try:
+            # Message de débogage
+            print(f"Tentative d'ajout du département : {name}")
+
+            department_model = Department(name=name)
+            department_model.save()
+
+            # Confirmation de l'ajout
+            print("Département ajouté avec succès.")
+
+            messages.success(request, "Département ajouté avec succès !")
+            return redirect('add_department')
+        except Exception as e:
+            # Message d'erreur de débogage
+            print(f"Erreur lors de l'ajout du département : {e}")
+
+            messages.error(request, f"Erreur lors de l'ajout du département : {e}")
+            return redirect('add_department')
+
+
+def manage_department(request):
+    departments = Department.objects.all()
+    context = {
+        "departments": departments
+    }
+    return render(request, 'hod_template/department/manage_department.html', context)
+
+
+def edit_department(request, department_id):
+    department = Department.objects.get(id=department_id)
+    context = {
+        "department": department,
+        "id": department_id
+    }
+    return render(request, 'hod_template/department/edit_department.html', context)
+
+
+def edit_department_save(request):
+    if request.method != "POST":
+        HttpResponse("Invalid Method")
+    else:
+        department_id = request.POST.get('department_id')
+        name = request.POST.get('department')
+
+        try:
+            department = Department.objects.get(id=department_id)
+            department.name = name
+            department.save()
+
+            messages.success(request, "departement mis a jour avec Succes.")
+            return redirect('/edit_department/'+department_id)
+
+        except:
+            messages.error(request, "departement suprimer avec succes.")
+            return redirect('/edit_department/'+department_id)
+
+
+def delete_department(request, department_id):
+    department = Department.objects.get(id=department_id)
+    try:
+        department.delete()
+        messages.success(request, "departement suprimer avec Succes.")
+        return redirect('manage_department')
+    except:
+        messages.error(request, "departement suprimer avec succes.")
+        return redirect('manage_department')
 
 
 def manager_profile(request):
@@ -44,12 +124,14 @@ def adminhod_home(request):
     all_manager_count = Managers.objects.all().count()
     all_responsablerh_count = Responsablerhs.objects.all().count()
     all_director_count = Directors.objects.all().count()
+    all_department_count =Department.objects.all().count()
 
     context={
         "all_employee_count" : all_employee_count,
         "all_manager_count" : all_manager_count,
         "all_responsablerh_count" : all_responsablerh_count,
         "all_director_count" : all_director_count,
+        "all_department_count":all_department_count,
         
     }
 
@@ -318,8 +400,6 @@ def add_employee(request):
         "form": form
     }
     return render(request, 'hod_template/employer/add_employee.html', context)
-
-
 def add_employee_save(request):
     if request.method != "POST":
         messages.error(request, "Invalid Method")
@@ -335,12 +415,10 @@ def add_employee_save(request):
             password = form.cleaned_data['password']
             address = form.cleaned_data['address']
             manager_id = form.cleaned_data['manager_id']
-            department_id = form.cleaned_data['departement_id']
+            department_id = form.cleaned_data['department_id']
             gender = form.cleaned_data['gender']
 
             # Getting Profile Pic first
-            # First Check whether the file is selected or not
-            # Upload only if file is selected
             if len(request.FILES) != 0:
                 profile_pic = request.FILES['profile_pic']
                 fs = FileSystemStorage()
@@ -349,27 +427,42 @@ def add_employee_save(request):
             else:
                 profile_pic_url = None
 
-
             try:
-                user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type="1")
-                user.employees.address = address
-
-                manager_obj = Managers.objects.get(id=manager_id)
-                user.employees.manager_id = manager_obj
-
-                department_obj = Department.objects.get(id=department_id)
-                user.employees.department_id = department_obj
-
-                user.employees.gender = gender
-                user.employees.profile_pic = profile_pic_url
+                user = CustomUser.objects.create_user(username=username, password=password, email=email, first_name=first_name, last_name=last_name, user_type=1)
                 user.save()
-                messages.success(request, "employees ajouter avec succes !")
+
+                try:
+                    manager_obj = Managers.objects.get(id=manager_id)
+                except Managers.DoesNotExist:
+                    messages.error(request, "Manager not found")
+                    return redirect('add_employee')
+
+                try:
+                    department_obj = Department.objects.get(id=department_id)
+                except Department.DoesNotExist:
+                    messages.error(request, "Department not found")
+                    return redirect('add_employee')
+
+                employee = Employees(
+                    admin=user,
+                    address=address,
+                    manager_id=manager_obj,
+                    department_id=department_obj,
+                    gender=gender,
+                    profile_pic=profile_pic_url
+                )
+                employee.save()
+                
+                messages.success(request, "Employee ajouté avec succès!")
                 return redirect('add_employee')
-            except:
-                messages.error(request, "Failed to Add employees !")
+            except Exception as e:
+                messages.error(request, f"Failed to add employee: {e}")
                 return redirect('add_employee')
         else:
+            messages.error(request, "Form data is invalid")
             return redirect('add_employee')
+
+
 
 
 def manage_employee(request):
@@ -381,20 +474,22 @@ def manage_employee(request):
 
 
 def edit_employee(request, employee_id):
-    # Adding Student ID into Session Variable
-    request.department['employee_id'] = employee_id
+    try:
+        employee = Employees.objects.get(admin__id=employee_id)
+    except Employees.DoesNotExist:
+        messages.error(request, "L'employé n'existe pas.")
+        return redirect('/manage_employee')
 
-    employee = Employees.objects.get(admin=employee_id)
-    form = EditEmployeeForm()
-    # Filling the form with Data from Database
-    form.fields['email'].initial = employee.admin.email
-    form.fields['username'].initial = employee.admin.username
-    form.fields['first_name'].initial = employee.admin.first_name
-    form.fields['last_name'].initial = employee.admin.last_name
-    form.fields['address'].initial = employee.address
-    form.fields['manager_id'].initial = employee.manager_id.id
-    form.fields['gender'].initial = employee.gender
-    form.fields['department_id'].initial = employee.department_id.id
+    form = EditEmployeeForm(initial={
+        'email': employee.admin.email,
+        'username': employee.admin.username,
+        'first_name': employee.admin.first_name,
+        'last_name': employee.admin.last_name,
+        'address': employee.address,
+        'manager_id': employee.manager_id.id if employee.manager_id else None,
+        'gender': employee.gender,
+        'department_id': employee.department_id.id if employee.department_id else None,
+    })
 
     context = {
         "id": employee_id,
@@ -403,71 +498,76 @@ def edit_employee(request, employee_id):
     }
     return render(request, "hod_template/employer/edit_employee.html", context)
 
-
 def edit_employee_save(request):
     if request.method != "POST":
-        return HttpResponse("Invalid Method!")
-    else:
-        employee_id = request.department.get('employee_id')
-        if employee_id == None:
-            return redirect('/manage_employee')
+        return HttpResponse("Méthode invalide !")
+    
+    employee_id = request.POST.get('employee_id')
+    print(f"Employee ID from POST: {employee_id}")
 
-        form = EditEmployeeForm(request.POST, request.FILES)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            username = form.cleaned_data['username']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            address = form.cleaned_data['address']
-            manager_id = form.cleaned_data['manager_id']
-            gender = form.cleaned_data['gender']
-            department_id = form.cleaned_data['department_id']
+    if employee_id is None:
+        messages.error(request, "ID de l'employé non trouvé.")
+        return redirect('/manage_employee')
 
-            # Getting Profile Pic first
-            # First Check whether the file is selected or not
-            # Upload only if file is selected
-            if len(request.FILES) != 0:
+    form = EditEmployeeForm(request.POST, request.FILES)
+
+    if form.is_valid():
+        email = form.cleaned_data['email']
+        username = form.cleaned_data['username']
+        first_name = form.cleaned_data['first_name']
+        last_name = form.cleaned_data['last_name']
+        address = form.cleaned_data['address']
+        manager_id = form.cleaned_data['manager_id']
+        gender = form.cleaned_data['gender']
+        department_id = form.cleaned_data['department_id']
+
+        try:
+            # Mise à jour dans le modèle Custom User
+            user = CustomUser.objects.get(id=employee_id)
+            user.email = email
+            user.username = username
+            user.first_name = first_name
+            user.last_name = last_name
+            user.save()
+
+            # Mise à jour dans le modèle Employees
+            employee = Employees.objects.get(admin_id=employee_id)
+            employee.address = address
+            employee.gender = gender
+
+            if manager_id:
+                manager = Managers.objects.get(id=manager_id)
+                employee.manager_id = manager
+
+            if department_id:
+                department = Department.objects.get(id=department_id)
+                employee.department_id = department
+
+            if 'profile_pic' in request.FILES:
                 profile_pic = request.FILES['profile_pic']
                 fs = FileSystemStorage()
                 filename = fs.save(profile_pic.name, profile_pic)
-                profile_pic_url = fs.url(filename)
-            else:
-                profile_pic_url = None
+                employee.profile_pic = fs.url(filename)
 
-            try:
-                # First Update into Custom User Model
-                user = CustomUser.objects.get(id=employee_id)
-                user.first_name = first_name
-                user.last_name = last_name
-                user.email = email
-                user.username = username
-                user.save()
+            employee.save()
 
-                # Then Update Students Table
-                employee_model = Employees.objects.get(admin=employee_id)
-                employee_model.address = address
+            messages.success(request, "Employé mis à jour avec succès !")
+            return redirect('/edit_employee/' + employee_id)
 
-                manager = Managers.objects.get(id=manager_id)
-                employee_model.manager_id = manager
+        except CustomUser.DoesNotExist:
+            messages.error(request, "Utilisateur personnalisé non trouvé.")
+        except Employees.DoesNotExist:
+            messages.error(request, "Employé non trouvé.")
+        except Managers.DoesNotExist:
+            messages.error(request, "Manager non trouvé.")
+        except Department.DoesNotExist:
+            messages.error(request, "Département non trouvé.")
 
-                department_obj = Department.objects.get(id=department_id)
-                employee_model.department_id = department_obj
+    else:
+        messages.error(request, "Le formulaire n'est pas valide.")
 
+    return redirect('/edit_employee/' + employee_id)
 
-                employee_model.gender = gender
-                if profile_pic_url != None:
-                    employee_model.profile_pic = profile_pic_url
-                employee_model.save()
-                # Delete student_id SESSION after the data is updated
-                del request.department['employee_id']
-
-                messages.success(request, "employees mis a jour avec Succes !")
-                return redirect('/edit_employee/'+employee_id)
-            except:
-                messages.success(request, "Failed to Uupdate employee.")
-                return redirect('/edit_employee/'+employee_id)
-        else:
-            return redirect('/edit_employee/'+employee_id)
 
 
 def delete_employee(request, employee_id):
