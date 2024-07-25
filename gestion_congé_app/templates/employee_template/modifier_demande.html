@@ -1,0 +1,28 @@
+{% extends 'employee_template/base_template.html' %}
+
+{% block page_title %}
+    Modifier Demande de Congé
+{% endblock page_title %}
+
+{% block main_content %}
+    
+{% load static %}
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css">
+<link rel="stylesheet" href="{% static 'employee/style.css' %}">
+
+<section class="content">
+    <div class="container-fluid">
+    <div class="submit-leave-form">
+        <h3>Modifier Demande de Congé</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Enregistrer les modifications</button>
+        </form>
+    </div>
+</div>
+</section>
+
+{% endblock main_content %}

@@ -1,0 +1,39 @@
+{% extends 'employee_template/base_template.html' %}
+
+{% block page_title %}
+    Mon espace congé
+{% endblock page_title %}
+
+{% block main_content %}
+    
+{% load static %}
+    <style>
+        table {
+            width: 50%;
+            margin: 50px auto;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            background-color: rgba(6, 185, 6, 0.1); /* Vert transparent pour le fond */
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+<section class="content">
+    <div class="container-fluid">
+<body>
+    <table>
+        <tr>
+            <th>Nom de l'employé</th>
+            <th>Solde de congés (jours)</th>
+        </tr>
+        <tr>
+            <td>{{ employee.admin.username }}</td>
+            <td>{{ solde_conge }}</td>
+        </tr>
+    </table>
+</body>
+  </div><!-- /.container-fluid -->
+</section>
+{% endblock main_content %}

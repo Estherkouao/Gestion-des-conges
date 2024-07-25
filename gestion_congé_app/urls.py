@@ -80,10 +80,20 @@ urlpatterns = [
    path('responsablerh_profile/', HrViews.responsablerh_profile, name="responsablerh_profile"),
    path('responsablerh_profile_update/', HrViews.responsablerh_profile_update, name="responsablerh_profile_update"),
 
+
    # url Director
    path('director_home/', DirectorViews.director_home, name="director_home"),
    path('liste_des_employee/', DirectorViews.liste_des_employee, name="liste_des_employee"),
 
    path('director_profile/', DirectorViews.director_profile, name="director_profile"),
    path('director_profile_update/', DirectorViews.director_profile_update, name="director_profile_update"),
+
+
+   # url employee
+   path('employee_home/', EmployeeViews.employee_home, name="employee_home"),
+   path('espace_conge/', EmployeeViews.espace_conge, name="espace_conge"),
+   path('employee_profile/', EmployeeViews.employee_profile, name="employee_profile"),
+   path('modifier_demande/<int:id>/', EmployeeViews.modifier_demande, name="modifier_demande"),
+   path('supprimer_demande/<int:id>/', EmployeeViews.supprimer_demande, name="supprimer_demande"),
 ]
+

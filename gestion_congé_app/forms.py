@@ -1,6 +1,18 @@
 from django import forms 
 from django.forms import Form
-from gestion_congé_app.models import Managers, Department
+from gestion_congé_app.models import Managers, Department, LeaveRequest
+
+class LeaveRequestForm(forms.ModelForm):
+    class Meta:
+        model = LeaveRequest
+        fields = ['leave_type', 'start_date', 'end_date', 'reason']
+        widgets = {
+            'leave_type': forms.Select(choices={('MALADIE', 'maladie'),('CONGE', 'conge'),('MARIAGE', 'mariage'),('DECES', 'deces')}),
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'reason': forms.Textarea(attrs={'rows': 4}),
+        }
+
 
 class DateInput(forms.DateInput):
     input_type = "date"
@@ -78,10 +90,16 @@ from .models import LeaveRequest
 class LeaveRequestCommentForm(forms.ModelForm):
     class Meta:
         model = LeaveRequest
-        fields = ['manager_comment']  # Champs que le manager peut commenter
-
+        fields = ['manager_comment']
+        widgets = {
+            'manager_comment': forms.Textarea(attrs={'rows': 4}),
+        }
 
 class LeaveRequestCommentrhForm(forms.ModelForm):
     class Meta:
         model = LeaveRequest
-        fields = ['hr_comment']  # Champs que le RH peut commenter
+        fields = ['hr_comment']
+        widgets = {
+            'hr_comment': forms.Textarea(attrs={'rows': 4}),
+        }        
+

@@ -1,0 +1,54 @@
+{% extends 'employee_template/base_template.html' %}
+
+{% block page_title %}
+    Mon espace congé
+{% endblock page_title %}
+
+{% block main_content %}
+    
+{% load static %}
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css">
+<link rel="stylesheet" href="{% static 'employee/style.css' %}">
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="employee-dashboard">
+            <div class="leave-requests">
+                <h3>Mes demandes de congé</h3>
+                <ul>
+                    {% for request in leave_requests %}
+                        <li>
+                            {{ request.leave_type }} : du {{ request.start_date }} au {{ request.end_date }} : {{ request.get_status_display }} Commentaire du Manager: {{ request.manager_comment|default:"Pas de commentaire" }}<br>Commentaire du RH: {{ request.hr_comment|default:"Pas de commentaire" }}<br>
+                             {% if request.status == 'Rejected by Manager' or request.status == 'Rejected by Responsablerh' or request.status == 'Pending'  %}
+                                <a href="{% url 'modifier_demande' request.id %}" class="btn btn-primary">Modifier</a>
+                                <form action="{% url 'supprimer_demande' request.id %}" method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                                </form>
+            
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <div>
+                 <p>Solde de vos congés: {{ leave_balance }} jours</p>
+          </div>
+
+
+            <div class="submit-leave-form">
+                <h3>Soumettre une nouvelle demande de congé</h3>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Soumettre</button>
+                </form>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}

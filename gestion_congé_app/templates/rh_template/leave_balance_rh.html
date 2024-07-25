@@ -8,17 +8,17 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Employés </th>
-                <th>Solde des Congés</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for employee in employees %}
-                <tr>
-                    <td>{{ employee.admin.username }}</td>
-                    <td>{{ employee.leave_balance }}</td>
-                </tr>
-            {% endfor %}
+            <th>Nom de l'employé</th>
+            <th>Solde de congé</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for balance in employee_balances %}
+        <tr>
+            <td>{{ balance.employee.admin.username }}</td>
+            <td>{{ balance.leave_balance }} jours</td>
+        </tr>
+        {% endfor %}
         </tbody>
     </table>
 {% endblock main_content %}

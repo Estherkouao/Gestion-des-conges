@@ -8,6 +8,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.shortcuts import render
 from .forms import LeaveRequestCommentrhForm
 from datetime import date
+from django.db.models import Sum, Case, When, DurationField, F
+from django.utils import timezone
+from datetime import timedelta
 
 from gestion_congé_app.models import (
     CustomUser, Responsablerhs, Directors, Managers, Department, Employees,LeaveRequest
@@ -66,58 +69,82 @@ def liste_employee_rh(request):
 
 
 def conge_atente_rh(request):
-    
-    leave_requests = LeaveRequest.objects.all()
-
-    # Si le formulaire est soumis
-    if request.method == 'POST':
-        form = LeaveRequestCommentrhForm(request.POST)
-        if form.is_valid():
-            # Sauvegarde du commentaire du responsablerh pour la demande de congé
-            leave_request_id = request.POST.get('leave_request_id')  # Récupérer l'ID de la demande de congé
-            leave_request = get_object_or_404(LeaveRequest, pk=leave_request_id)
-            leave_request.hr_comment = form.cleaned_data['hr_comment']
-            leave_request.save()
-            # Redirection ou autre logique après sauvegarde
-            leave_requests = LeaveRequest.objects.filter(responsablerh=request.user.responsablerh)
+    # Récupérer toutes les demandes de congé en attente d'approbation par le Responsablerh
+    leave_requests = LeaveRequest.objects.filter(status='Approved by Manager')
 
     if request.method == 'POST':
         leave_request_id = request.POST.get('leave_request_id')
         action = request.POST.get('action')
         leave_request = get_object_or_404(LeaveRequest, id=leave_request_id)
 
+        # Gestion des actions d'approbation et de rejet par le Responsablerh
         if action == 'approve':
-            leave_request.status = 'approved'
-            messages.success(request, f"La demande de congé de {leave_request.employee_id.name} a été approuvée.")
+            leave_request.status = 'Approved by Responsablerh'
+            messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été approuvée par le Responsablerh.")
+            # Notifier l'employé que la demande est approuvée
+            notify_employee_of_approval(leave_request)
         elif action == 'reject':
-            leave_request.status = 'rejected'
-            messages.success(request, f"La demande de congé de {leave_request.employee_id.name} a été rejetée.")
-
-        # Save the manager's comment if there is one
-        form = LeaveRequestCommentrhForm(request.POST, instance=leave_request)
-        if form.is_valid():
-            form.save()
+            leave_request.status = 'Rejected by Responsablerh'
+            messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été rejetée par le Responsablerh.")
+            # Notifier l'employé du rejet
+            notify_employee_of_rejection(leave_request)
 
         leave_request.save()
         return redirect('conge_atente_rh')
-
-    else:
-        form = LeaveRequestCommentrhForm()
-
+    
     context = {
         'leave_requests': leave_requests,
-         'form': form,
     }
     return render(request, 'rh_template/conge_atente_rh.html', context)
 
+def notify_employee_of_approval(leave_request):
+    pass
+
+def notify_employee_of_rejection(leave_request):
+    pass
+
+
 
 def leave_balance_rh(request):
-    employees = Employees.objects.filter()
+    employees = Employees.objects.all()  # Récupérer tous les employés
+
+    current_year = timezone.now().year
+    leave_limit = 30  # Limite de 30 jours pour 'CONGE'
+
+    # Calculer le solde de congé pour chaque employé
+    employee_balances = []
+    for employee in employees:
+        total_leave_days = LeaveRequest.objects.filter(
+            employee_id=employee,
+            leave_type='CONGE',
+            start_date__year=current_year
+        ).aggregate(
+            total_days=Sum(
+                Case(
+                    When(end_date__isnull=False, then=F('end_date') - F('start_date') + timedelta(days=1)),
+                    default=timedelta(days=0),
+                    output_field=DurationField()
+                )
+            )
+        )['total_days']
+
+        # Convertir en jours
+        if total_leave_days is not None:
+            total_leave_days = total_leave_days.days
+        else:
+            total_leave_days = 0
+
+        leave_balance = leave_limit - total_leave_days
+        employee_balances.append({
+            'employee': employee,
+            'leave_balance': leave_balance
+        })
 
     context = {
-        'employees': employees,
+        'employee_balances': employee_balances,
     }
     return render(request, 'rh_template/leave_balance_rh.html', context)
+
 
 
 

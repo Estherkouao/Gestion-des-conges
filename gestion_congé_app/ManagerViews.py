@@ -7,6 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import LeaveRequestCommentForm
 from datetime import date
+from django.db.models import Sum, Case, When, DurationField, F
+from django.utils import timezone
+from datetime import timedelta
+
 
 from gestion_congé_app.models import (
     CustomUser, Responsablerhs, Directors, Managers, Department, Employees, LeaveRequest,AttendanceReport
@@ -79,7 +83,7 @@ def liste_employee(request, manager_id):
         logger.debug(f"Traitement de l'employé: {employee.admin.first_name} {employee.admin.last_name} (ID: {employee.id})")
         leave_requests = LeaveRequest.objects.filter(
             employee_id=employee.id, 
-            status='Approved', 
+            status__in=['Approved by Manager', 'Approved by Responsablerh'],
             start_date__lte=today, 
             end_date__gte=today
         )
@@ -102,62 +106,89 @@ def liste_employee(request, manager_id):
 
 def conge_attente(request, manager_id):
     manager = get_object_or_404(Managers, id=manager_id)
-    leave_requests = LeaveRequest.objects.filter(employee_id__manager_id=manager)
-    leave_requests = LeaveRequest.objects.all()
-
-    # Si le formulaire est soumis
-    if request.method == 'POST':
-        form = LeaveRequestCommentForm(request.POST)
-        if form.is_valid():
-            # Sauvegarde du commentaire du manager pour la demande de congé
-            leave_request_id = request.POST.get('leave_request_id')  # Récupérer l'ID de la demande de congé
-            leave_request = get_object_or_404(LeaveRequest, pk=leave_request_id)
-            leave_request.manager_comment = form.cleaned_data['manager_comment']
-            leave_request.save()
-            # Redirection ou autre logique après sauvegarde
-            leave_requests = LeaveRequest.objects.filter(manager=request.user.manager)
+    leave_requests = LeaveRequest.objects.filter(employee_id__manager_id=manager, status='Pending')
 
     if request.method == 'POST':
         leave_request_id = request.POST.get('leave_request_id')
         action = request.POST.get('action')
         leave_request = get_object_or_404(LeaveRequest, id=leave_request_id)
 
+        # Gestion des actions d'approbation et de rejet
         if action == 'approve':
-            leave_request.status = 'approved'
-            messages.success(request, f"La demande de congé de {leave_request.employee_id.name} a été approuvée.")
+            leave_request.status = 'Approved by Manager'
+            messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été approuvée par le manager et envoyée au Responsablerh.")
+            send_notification_to_responsablerh(leave_request)
         elif action == 'reject':
-            leave_request.status = 'rejected'
-            messages.success(request, f"La demande de congé de {leave_request.employee_id.name} a été rejetée.")
+            leave_request.status = 'Rejected by Manager'
+            messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été rejetée.")
+            notify_employee_of_rejection(leave_request)
 
-        # Save the manager's comment if there is one
+        # Sauvegarde du commentaire du manager
         form = LeaveRequestCommentForm(request.POST, instance=leave_request)
         if form.is_valid():
             form.save()
 
         leave_request.save()
-        return redirect('conge_attente')
-
+        return redirect('conge_attente', manager_id=manager_id)
+    
     else:
         form = LeaveRequestCommentForm()
 
     context = {
         'manager_id': manager_id,
         'leave_requests': leave_requests,
-         'form': form,
+        'form': form,
     }
     return render(request, 'manager_template/conge_attente.html', context)
-
 
 def leave_balance(request, manager_id):
     manager = get_object_or_404(Managers, id=manager_id)
     employees = Employees.objects.filter(manager_id=manager)
 
+    current_year = timezone.now().year
+    leave_limit = 30  # Limite de 30 jours pour 'CONGE'
+
+    # Calculer le solde de congé pour chaque employé
+    employee_balances = []
+    for employee in employees:
+        total_leave_days = LeaveRequest.objects.filter(
+            employee_id=employee,
+            leave_type='CONGE',
+            start_date__year=current_year
+        ).aggregate(
+            total_days=Sum(
+                Case(
+                    When(end_date__isnull=False, then=F('end_date') - F('start_date') + timedelta(days=1)),
+                    default=timedelta(days=0),
+                    output_field=DurationField()
+                )
+            )
+        )['total_days']
+
+        # Convertir en jours
+        if total_leave_days is not None:
+            total_leave_days = total_leave_days.days
+        else:
+            total_leave_days = 0
+
+        leave_balance = leave_limit - total_leave_days
+        employee_balances.append({
+            'employee': employee,
+            'leave_balance': leave_balance
+        })
+
     context = {
         'manager_id': manager_id,
-        'employees': employees,
+        'employee_balances': employee_balances,
     }
     return render(request, 'manager_template/leave_balance.html', context)
 
+
+def send_notification_to_responsablerh(leave_request):
+    pass
+
+def notify_employee_of_rejection(leave_request):
+    pass
 
 
 def manager_profile(request):
