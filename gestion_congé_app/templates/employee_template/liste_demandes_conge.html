@@ -1,0 +1,87 @@
+{% extends 'employee_template/base_template.html' %}
+
+{% block page_title %}
+   <strong> Mes demandes de congé</strong>
+{% endblock page_title %}
+
+{% block main_content %}
+    
+{% load static %}
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css">
+<link rel="stylesheet" href="{% static 'employee/style.css' %}">
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="employee-dashboard">
+            <div class="new-request-btn">
+                <a href="{% url 'espace_conge' %}" class="btn btn-success">Nouvelle demande</a>
+            </div>
+
+            <!-- Historique de demande title -->
+            <div class="historique-title" style="text-align: center; margin: 20px 0;">
+                <h2>Historique de demande de congé</h2>
+            </div>
+
+            <!-- Table of leave requests -->
+            <div class="leave-requests">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Type de congé</th>
+                            <th>Période</th>
+                            <th>Nombre de Jours</th>
+                            <th>Status</th>
+                            <th>Commentaire du Manager</th>
+                            <th>Commentaire du RH</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for request in leave_requests %}
+                            <tr>
+                                <td>{{ request.leave_type }}</td>
+                                <td>du {{ request.start_date }} au {{ request.end_date }}</td>
+                                <td>{{ request.leave_days }}</td>
+                                <td>{{ request.get_status_display }}</td>
+                                <td>{{ request.manager_comment|default:"-" }}</td>
+                                <td>{{ request.hr_comment|default:"-" }}</td>
+                                
+                                <td>
+                                         {% if request.status == 'Rejected by Manager' or request.status == 'Rejected by Responsablerh' or request.status == 'Pending' or request.status == 'Draft' %}
+                                        <a href="{% url 'modifier_demande' request.id %}" class="btn btn-primary">Modifier</a>
+                                    {% endif %}
+                                    {% if request.status == 'Approved by Responsablerh' and request.end_date < today %}
+                                        <form action="{% url 'supprimer_demande' request.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                                        </form>
+                                     {% elif request.status == 'Rejected by Manager' or request.status == 'Rejected by Responsablerh' or request.status == 'Pending' or request.status == 'Draft' %}
+                                        <form action="{% url 'supprimer_demande' request.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                                        </form>
+                                    {% endif %}
+                                     {% if request.status == 'Draft' %}
+                                        <form action="{% url 'soumettre_demande' request.id %}" method="post" style="display:inline;">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-success">Soumettre</button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Leave balance -->
+            <div>
+                <p>Solde de vos congés: {{ leave_balance }} jours</p>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section> 
+
+{% endblock main_content %}

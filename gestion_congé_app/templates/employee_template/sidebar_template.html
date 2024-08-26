@@ -3,9 +3,9 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="{% url 'manager_home' %}" class="brand-link">
-        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+        <img src="{% static 'dist/img/OCP-logo.jpg' %}" alt="OCP-logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
-        <span class="brand-text font-weight-light">dashboard employee</span>
+        <span class="brand-text font-weight-light">dashboard employés</span>
       </a>
       
       <!-- Sidebar -->
@@ -41,7 +41,17 @@
               <a href="{{ espace_conge }}" class="nav-link {% if request.path == espace_conge %} active {% endif %} {% if request.path == espace_conge %} active {% endif %}">
                 <i class="nav-icon fas fa-chalkboard-teacher"></i>
                 <p>
-                  Espace Conge
+                  Soumission de congé
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'liste_demandes_conge' as liste_demandes_conge %}
+              <a href="{{ liste_demandes_conge }}" class="nav-link {% if request.path == liste_demandes_conge %} active {% endif %} {% if request.path == liste_demandes_conge %} active {% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i>
+                <p>
+                  liste des demandes de conge
                 </p>
               </a>
             </li>

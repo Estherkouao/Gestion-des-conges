@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -41,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'gestion_congé_app',
+    'crispy_forms',
+    'crispy_bootstrap4',
+
 ]
 
 MIDDLEWARE = [
@@ -148,6 +152,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Registering Custom Backend "EmailBackEnd"
 AUTHENTICATION_BACKENDS = ['gestion_congé_app.EmailBackEnd.EmailBackEnd']
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+# EMAIL CONFIGURATION
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'estherkouao9@gmail.com'
+EMAIL_HOST_PASSWORD = 'fayg dcqm mxhy pxki'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+
+
+    
+
+
+
 
 
 

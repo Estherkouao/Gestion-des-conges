@@ -16,10 +16,12 @@
     <div class="container-fluid">
     <div class="submit-leave-form">
         <h3>Modifier Demande de Congé</h3>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Enregistrer les modifications</button>
+                      {% load crispy_forms_tags %}
+<form method="post">
+    {% csrf_token %}
+    <div class="container">
+        {% crispy form %}
+    </div>
         </form>
     </div>
 </div>

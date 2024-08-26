@@ -1,7 +1,7 @@
 {% extends 'manager_template/base_template.html' %}
 
 {% block page_title %}
-    CONGÉS EN ATTENTE
+   <strong>Demandes de congé en attente</strong>
 {% endblock page_title %}
 
 {% block main_content %}
@@ -12,28 +12,50 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css">
 <link rel="stylesheet" href="{% static 'manager/style.css' %}">
 
-<body>
 <section class="content">
     <div class="container-fluid">
-        <h2>Demandes de congé en attente</h2>
-        <ul>
-            {% for request in leave_requests %}
-                <li>
-                    <strong>{{ request.employee_id.admin.username }}</strong>: {{ request.leave_type }} du {{ request.start_date }} au {{ request.end_date }} raison: {{ request.reason }}
-                    <form method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <input type="hidden" name="leave_request_id" value="{{ request.id }}">
-                        <textarea name="manager_comment" rows="2">{{ request.manager_comment }}</textarea>
-                        <div>
-                            <button type="submit" name="action" value="approve">Approuver</button>
-                            <button type="submit" name="action" value="reject">Rejeter</button>
-                        </div>
-                    </form>
-                </li>
-            {% endfor %}
-        </ul>
+       
+
+        <!-- Tableau des demandes de congé -->
+        <div class="leave-requests">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Employé</th>
+                        <th>Type Congé</th>
+                        <th>Date debut</th>
+                        <th>Date fin</th>
+                        <th>Nbr jour</th>
+                        <th>Raison</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in leave_requests %}
+                        <tr>
+                            <td>{{ request.employee_id.admin.first_name }} {{ request.employee_id.admin.last_name }}</td>
+                            <td>{{ request.leave_type }}</td>
+                            <td>{{ request.start_date }}</td>
+                            <td>{{ request.end_date }}</td>
+                            <td>{{ request.leave_days }}</td>
+                            <td>{{ request.reason }}</td>
+                            <td>
+                            <form method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="leave_request_id" value="{{ request.id }}">
+
+                                    <button type="submit" name="action" value="approve" class="btn btn-success">Approuver</button>
+                                    <button type="submit" name="action" value="reject" class="btn btn-danger">Rejeter</button>
+                                    
+                                </form>
+                                <a href="{% url 'ajout_commentaire' leave_request_id=request.id %}" class="btn btn-success mt-1">Ajouter commentaire</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div><!-- /.container-fluid -->
 </section>
-</body>
 
 {% endblock main_content %}

@@ -1,7 +1,7 @@
 {% extends 'manager_template/base_template.html' %}
 
 {% block page_title %}
-   Bienvenue, {{ manager.admin.username }}!
+  <strong> Bienvenue, {{ manager.admin.username }}! </strong>
 {% endblock page_title %}
 
 {% block main_content %}
@@ -19,7 +19,7 @@
                     <div class="inner">
                         <h3>{{ all_employee_count }}</h3>
 
-                        <p>Employer sous ma responsabiliter</p>
+                        <p>Employés sous ma responsabilité</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
@@ -34,7 +34,7 @@
                     <div class="inner">
                         <h3>{{ all_conge_atente_count }}</h3>
 
-                        <p>conge en atente</p>
+                        <p>congé en attente</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
@@ -49,7 +49,7 @@
                     <div class="inner">
                         <h3>{{ all_leave_balance_count }}</h3>
 
-                        <p>Total de conge des employee</p>
+                        <p>Total des congés des employés</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>

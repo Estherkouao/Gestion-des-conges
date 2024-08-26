@@ -3,9 +3,9 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - A Pen by Mohithpoojary</title>
-  <link rel='stylesheet' href="{% static 'https://use.fontawesome.com/releases/v5.2.0/css/all.css' %}">
-<link rel='stylesheet' href="{% static 'https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css' %}"><link rel="stylesheet" href="{% static 'login/style.css' %}">
+  <title>page de connexion</title>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/fontawesome.css"><link rel="stylesheet" href="{% static 'login/style.css' %}">
 
 </head>
 <body>
@@ -13,6 +13,9 @@
 <div class="container">
 	<div class="screen">
 		<div class="screen__content">
+		  <div class="logo-container" style="text-align: left; margin-bottom: 10px;">
+                <img src="{% static 'dist/img/OCP-logo.jpg' %}" alt="Logo" style="width: 150px;">
+            </div>
 			<form class="login" action="{% url 'doLogin' %}" method="POST">
 				{% csrf_token %}
 				<div class="login__field">
@@ -21,10 +24,10 @@
 				</div>
 				<div class="login__field">
 					<i class="login__icon fas fa-lock"></i>
-					<input name="password" type="password" class="login__input" placeholder="Password">
+					<input name="password" type="password" class="login__input" placeholder="mot de passe">
 				</div>
 				<button class="button login__submit">
-					<span class="button__text">Log In Now</span>
+					<span class="button__text">connexion</span>
 					<i class="button__icon fas fa-chevron-right"></i>
 				</button>				
 			</form>

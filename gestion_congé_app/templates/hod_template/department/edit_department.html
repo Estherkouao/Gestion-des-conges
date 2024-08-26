@@ -1,7 +1,7 @@
 {% extends 'hod_template/base_template.html' %}
 
 {% block page_title %}
-    Modifier Departement | #ID : {{ department.id }}
+  
 {% endblock page_title %}
 
 {% block main_content %}
@@ -52,7 +52,7 @@
 
                         <div class="card-body">
                             <div class="form-group">
-                                <label>Departement Name </label>
+                                <label> Nom du Departement </label>
                                 <input type="text" class="form-control" name="department" value="{{ department.name }}">
                                 <input type="hidden" name="department_id" value="{{ department.id }}" />
                             </div>

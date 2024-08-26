@@ -3,7 +3,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="{% url 'manager_home' %}" class="brand-link">
-        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+        <img src="{% static 'dist/img/OCP-logo.jpg' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
         <span class="brand-text font-weight-light">dashboard manager</span>
       </a>
@@ -31,7 +31,7 @@
               <a href="{{ manager_home }}" class="nav-link {% if request.path == manager_home %} active {% endif %}">
                 <i class="nav-icon fas fa-tachometer-alt"></i>
                 <p>
-                  Home
+                  Accueil
                   {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
                 </p>
               </a>
@@ -43,7 +43,7 @@
             <a href="{% url 'liste_employee' manager_id=manager_id %}" class="nav-link {% if request.path == '/manager/'|add:manager_id|add:'/liste_employee' %} active {% endif %}">
               <i class="nav-icon fas fa-calendar-plus"></i>
               <p>
-                 Liste employé
+                 Liste des employés
              </p>
            </a>
          </li>
@@ -63,7 +63,7 @@
             <a href="{% url 'leave_balance' manager_id=manager_id %}" class="nav-link {% if request.path == '/manager/'|add:manager_id|add:'/leave_balance' %} active {% endif %}">
               <i class="nav-icon fas fa-calendar-plus"></i>
               <p>
-                  Solde conge
+                  Solde des congès
              </p>
            </a>
          </li>

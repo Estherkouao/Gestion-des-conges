@@ -12,6 +12,9 @@ from django.utils import timezone
 from datetime import timedelta
 
 
+
+
+
 from gestion_congé_app.models import (
     CustomUser, Responsablerhs, Directors, Managers, Department, Employees, LeaveRequest,AttendanceReport
 )
@@ -27,41 +30,19 @@ def manager_home(request):
 
     
     
-    all_employee_count = Employees.objects.all().count()
+    """ all_employee_count = Employees.objects.all().count()
     all_conge_atente_count = LeaveRequest.objects.all().count()
-    all_leave_balance_count = Employees.objects.all().count()
+    all_leave_balance_count = Employees.objects.all().count() """
    
 
-    # all_leave_count = AttendanceReport.objects.filter(employee_id=employee.id, leave_status=1).count()
-
-   
-    # employees_attendance = Employees.objects.filter('employee_id')
-    # employee_list = []
-    # employee_list_attendance_present = []
-    # employee_list_attendance_absent = []
-    # for employee in employees_attendance:
-    #     attendance_present_count = AttendanceReport.objects.filter(status=True, employee_id=employee.id).count()
-    #     attendance_absent_count = AttendanceReport.objects.filter(status=False, employee_id=employee.id).count()
-    #     employee_list.append(employee.admin.first_name+" "+ employee.admin.last_name)
-    #     employee_list_attendance_present.append(attendance_present_count)
-    #     employee_list_attendance_absent.append(attendance_absent_count)
 
     context={
-        "all_employee_count": all_employee_count,
-        "all_conge_atente_count": all_conge_atente_count,
         "manager_id": manager.id,
-        "all_leave_balance_count":all_leave_balance_count,
         'manager': manager,
 
     }
     return render(request, "manager_template/manager_home.html", context)
 
-# def all_leave_balance_count(request):
-#     total_leave_balance = Employees.objects.aggregate(total_leave_balance=Sum('leave_balance'))['total_leave_balance']
-#     context = {
-#         'total_leave_balance': total_leave_balance
-#     }
-#     return render(request, 'manager_template/manager_home.html', context)
     
 
 from datetime import date
@@ -102,7 +83,8 @@ def liste_employee(request, manager_id):
     logger.debug(f"Contexte passé au template: {context}")
     return render(request, 'manager_template/liste_employee.html', context)
 
-
+from django.core.mail import send_mail
+from django.conf import settings
 
 def conge_attente(request, manager_id):
     manager = get_object_or_404(Managers, id=manager_id)
@@ -116,10 +98,12 @@ def conge_attente(request, manager_id):
         # Gestion des actions d'approbation et de rejet
         if action == 'approve':
             leave_request.status = 'Approved by Manager'
+            leave_request.save()
             messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été approuvée par le manager et envoyée au Responsablerh.")
             send_notification_to_responsablerh(leave_request)
         elif action == 'reject':
             leave_request.status = 'Rejected by Manager'
+            leave_request.save()
             messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été rejetée.")
             notify_employee_of_rejection(leave_request)
 
@@ -127,19 +111,23 @@ def conge_attente(request, manager_id):
         form = LeaveRequestCommentForm(request.POST, instance=leave_request)
         if form.is_valid():
             form.save()
+        notify_employee_of_comment(leave_request)    
 
         leave_request.save()
-        return redirect('conge_attente', manager_id=manager_id)
+
+      
     
     else:
         form = LeaveRequestCommentForm()
 
+     
     context = {
         'manager_id': manager_id,
         'leave_requests': leave_requests,
         'form': form,
     }
     return render(request, 'manager_template/conge_attente.html', context)
+
 
 def leave_balance(request, manager_id):
     manager = get_object_or_404(Managers, id=manager_id)
@@ -185,10 +173,88 @@ def leave_balance(request, manager_id):
 
 
 def send_notification_to_responsablerh(leave_request):
-    pass
+      # Envoi d'email
+                subject = 'Nouvelle demande de congé aprouvée par le manager'
+                message = f"Une nouvelle demande de congé a été soumise par {leave_request.employee_id.admin.first_name} {leave_request.employee_id.admin.last_name} pour la période du {leave_request.start_date} au {leave_request.end_date}."
+                recipient_list = []
+
+                # Ajouter l'email du responsable RH global si disponible
+                responsablerh = Responsablerhs.objects.first()  
+                if responsablerh:
+                    responsablerh_user = responsablerh.admin
+                    recipient_list.append(responsablerh_user.email)
+
+                if recipient_list:
+                    send_mail(
+                        subject,
+                        message,
+                        settings.DEFAULT_FROM_EMAIL,
+                        recipient_list,
+                        fail_silently=False,
+                    )    
+
 
 def notify_employee_of_rejection(leave_request):
-    pass
+    employee = leave_request.employee_id
+    subject = 'Votre demande de congé a été rejetée'
+    message = f"Bonjour {employee.admin.first_name},\n\n" \
+              f"Votre demande de congé du {leave_request.start_date} au {leave_request.end_date} a été rejetée par le manager.\n\n" \
+              f"Veuillez modifier votre requette et le renvoyer.\n\n" \
+              f"Cordialement,\n"
+    recipient_list = [employee.admin.email]
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        recipient_list,
+        fail_silently=False,
+    )
+    
+def notify_employee_of_comment(leave_request):
+    employee = leave_request.employee_id
+    subject = 'Votre demande de congé a été commenter'
+    message = f"Bonjour {employee.admin.first_name},\n\n" \
+              f"Votre demande de congé du {leave_request.start_date} au {leave_request.end_date} a été commenter.\n\n" \
+              f"Cordialement,\n"
+    recipient_list = [employee.admin.email]
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        recipient_list,
+        fail_silently=False,
+    )
+
+
+def ajout_commentaire(request, leave_request_id):
+    leave_request = get_object_or_404(LeaveRequest, id=leave_request_id)
+    manager_id = request.user.id
+    
+    if request.method == 'POST':
+        form = LeaveRequestCommentForm(request.POST, instance=leave_request)
+        if form.is_valid():
+            leave_request.manager_comment = form.cleaned_data['manager_comment']
+            leave_request.save()
+            return redirect('manager_home')
+        
+    else:
+        form = LeaveRequestCommentForm(instance=leave_request)
+
+    return render(request, 'manager_template/ajout_commentaire.html', {
+        'form': form,
+        'leave_request': leave_request,
+        'manager_id': manager_id
+    })
+
+
+def supprimer_commentaire(request, leave_request_id):
+    leave_request = get_object_or_404(LeaveRequest, id=leave_request_id)
+
+    leave_request.manager_comment = ""
+    leave_request.save()
+    return redirect('manager_home')
 
 
 def manager_profile(request):
@@ -231,5 +297,11 @@ def manager_profile_update(request):
         except:
             messages.error(request, "Failed to Update Profile")
             return redirect('manager_profile')
+        
+
+         
+
+         
+
 
 

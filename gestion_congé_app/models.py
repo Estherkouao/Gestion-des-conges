@@ -80,8 +80,6 @@ class Employees(models.Model):
             raise ValueError("Insufficient leave balance")
 
         
-
-        
 class AttendanceReport():
     id = models.AutoField(primary_key=True)
     employee = models.ForeignKey(Employees, on_delete=models.CASCADE)  # Relate to Employees
@@ -105,6 +103,9 @@ class LeaveRequest(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Pending')
     manager_comment = models.TextField(blank=True, null=True)
     hr_comment = models.TextField(blank=True, null=True)
+    active = models.BooleanField(default=True)
+    deleted = models.BooleanField(default=False)
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='Draft')  
 
     @property
     def leave_days(self):
@@ -144,4 +145,5 @@ def save_user_profile(sender, instance, **kwargs):
         instance.directors.save()
     elif instance.user_type == "5":
         instance.adminhod.save()
+        
 

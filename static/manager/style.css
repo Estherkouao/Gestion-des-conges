@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700');
+
+/* Fond de la page vert clair et transparent */
+body {
+    background-color: rgba(144, 238, 144, 0.3); /* Vert clair avec transparence */
+    font-family: Arial, sans-serif; /* Police de base pour le texte */
+}
+
+/* Styles pour les titres <h2> */
+h2 {
+    color: rgb(82, 203, 243); /* Bleu clair pour les titres */
+    font-family: 'Garamond', serif; /* Police Garamond pour les titres */
+    margin-bottom: 20px;
+}
+
+/* Liste des demandes de congé */
+
+
+/* Formulaire intégré */
+form {
+    display: inline-block; /* Affichage en ligne pour le formulaire */
+    width: 100%; /* Prend toute la largeur de l'élément parent */
+}
+
+textarea {
+    width: calc(100% - 22px); /* Largeur du textarea en tenant compte des marges */
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+button:hover {
+    background-color: darkblue;
+}
+
+button[name="action"][value="reject"] {
+    background-color: red;
+}
+
+button[name="action"][value="reject"]:hover {
+    background-color: darkred;
+}

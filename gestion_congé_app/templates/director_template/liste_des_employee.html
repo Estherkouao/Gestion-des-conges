@@ -1,7 +1,7 @@
 {% extends 'director_template/base_template.html' %}
 
 {% block page_title %}
-   Liste des Employés
+    <strong>Liste des Employés</strong>
 {% endblock page_title %}
 
 {% block main_content %}
@@ -10,9 +10,8 @@
 <section class="content">
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-6">
-                <h5>Employés Non Actif</h5>
-                <table class="table table-bordered">
+            <div class="col-md-12">
+                <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>Nom</th>
@@ -21,34 +20,19 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for employee in employees_on_leave %}
+                    {% for item in employees_status %}
                         <tr>
-                            <td>{{ employee.admin.get_full_name }}</td>
-                            <td>{{ employee.department_id.name }}</td>
-                            <td>En congé</td>
+                            <td>{{ item.employee.admin.first_name }} {{ item.employee.admin.last_name }}</td>
+                            <td>{{ item.employee.department_id.name }}</td>
+                            <td>
+                                {% if item.on_leave %}
+                                    En congé
+                                {% else %}
+                                    Présent
+                                {% endif %}
+                             </td>
                         </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-md-6">
-                <h5>Employés Actif</h5>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Nom</th>
-                            <th>Département</th>
-                            <th>Statut</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for employee in employees_not_on_leave %}
-                        <tr>
-                            <td>{{ employee.admin.get_full_name }}</td>
-                            <td>{{ employee.department_id.name }}</td>
-                            <td>Présent</td>
-                        </tr>
-                        {% endfor %}
+                    {% endfor %}
                     </tbody>
                 </table>
             </div>

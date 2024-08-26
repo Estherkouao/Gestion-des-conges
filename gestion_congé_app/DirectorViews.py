@@ -73,15 +73,18 @@ def director_profile_update(request):
             return redirect('director_profile')
         
 
-        
+import logging
+logger = logging.getLogger(__name__)
+
 def liste_des_employee(request):
    employees = Employees.objects.all()
    today = date.today()
 
-   employees_on_leave = []
-   employees_not_on_leave = []
+    
+   employees_status = []
 
    for employee in employees:
+        logger.debug(f"Traitement de l'employé: {employee.admin.first_name} {employee.admin.last_name} (ID: {employee.id})")
         leave_requests = LeaveRequest.objects.filter(
             employee_id=employee, 
             status__in=['Approved by Manager', 'Approved by Responsablerh'],
@@ -89,15 +92,14 @@ def liste_des_employee(request):
             end_date__gte=today
         )
         on_leave = leave_requests.exists()
-
-        if on_leave:
-            employees_on_leave.append(employee)
-        else:
-            employees_not_on_leave.append(employee)
+        employees_status.append({
+            'employee': employee,
+            'on_leave': on_leave
+        })
+        logger.debug(f"Statut de l'employé {employee.id}: {'En congé' if on_leave else 'Présent'}")
 
    context = {
-        "employees_on_leave": employees_on_leave,
-        "employees_not_on_leave": employees_not_on_leave
+         'employees_status': employees_status,
     }
    return render(request, 'director_template/liste_des_employee.html', context)
 

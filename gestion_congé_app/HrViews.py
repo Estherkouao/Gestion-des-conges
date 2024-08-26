@@ -24,29 +24,28 @@ def responsablerh_home(request):
         return HttpResponse("Vous n'êtes pas autorisé à accéder à cette page.")
     responsablerh = get_object_or_404(Responsablerhs, admin=request.user) 
 
-    all_employee_count = Employees.objects.all().count()
+    """ all_employee_count = Employees.objects.all().count()
     all_conge_atente_count = LeaveRequest.objects.all().count()
-    all_leave_balance_count = Employees.objects.all().count()
+    all_leave_balance_count = Employees.objects.all().count() """
 
     context={
-
-        "all_employee_count": all_employee_count,
-        "all_conge_atente_count": all_conge_atente_count,
         "responsablerh_id": responsablerh.id,
-        "all_leave_balance_count" :all_leave_balance_count,
 
     }
     return render(request, "rh_template/responsablerh_home.html", context)
 
+import logging
+logger = logging.getLogger(__name__)
 
 def liste_employee_rh(request):
-    employees = Employees.objects.all()
-    today = date.today()
+   employees = Employees.objects.all()
+   today = date.today()
 
-    employees_on_leave = []
-    employees_not_on_leave = []
+    
+   employees_status = []
 
-    for employee in employees:
+   for employee in employees:
+        logger.debug(f"Traitement de l'employé: {employee.admin.first_name} {employee.admin.last_name} (ID: {employee.id})")
         leave_requests = LeaveRequest.objects.filter(
             employee_id=employee, 
             status__in=['Approved by Manager', 'Approved by Responsablerh'],
@@ -54,17 +53,16 @@ def liste_employee_rh(request):
             end_date__gte=today
         )
         on_leave = leave_requests.exists()
+        employees_status.append({
+            'employee': employee,
+            'on_leave': on_leave
+        })
+        logger.debug(f"Statut de l'employé {employee.id}: {'En congé' if on_leave else 'Présent'}")
 
-        if on_leave:
-            employees_on_leave.append(employee)
-        else:
-            employees_not_on_leave.append(employee)
-
-    context = {
-        "employees_on_leave": employees_on_leave,
-        "employees_not_on_leave": employees_not_on_leave
+   context = {
+         'employees_status': employees_status,
     }
-    return render(request, 'rh_template/liste_employee_rh.html', context)
+   return render(request, 'rh_template/liste_employee_rh.html', context)
 
 
 
@@ -80,17 +78,16 @@ def conge_atente_rh(request):
         # Gestion des actions d'approbation et de rejet par le Responsablerh
         if action == 'approve':
             leave_request.status = 'Approved by Responsablerh'
-            messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été approuvée par le Responsablerh.")
-            # Notifier l'employé que la demande est approuvée
+            leave_request.save()
             notify_employee_of_approval(leave_request)
+            messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été approuvée par le Responsablerh.")
         elif action == 'reject':
             leave_request.status = 'Rejected by Responsablerh'
-            messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été rejetée par le Responsablerh.")
-            # Notifier l'employé du rejet
+            leave_request.save()
             notify_employee_of_rejection(leave_request)
+            messages.success(request, f"La demande de congé de {leave_request.employee_id.admin.username} a été rejetée par le Responsablerh.")
 
-        leave_request.save()
-        return redirect('conge_atente_rh')
+        return redirect('conge_atente_rh')  
     
     context = {
         'leave_requests': leave_requests,
@@ -148,6 +145,33 @@ def leave_balance_rh(request):
 
 
 
+def ajout_commentairerh(request, leave_request_id):
+    leave_request = get_object_or_404(LeaveRequest, id=leave_request_id)
+
+    if request.method == 'POST':
+        form = LeaveRequestCommentrhForm(request.POST, instance=leave_request)
+        if form.is_valid():
+            leave_request.hr_comment = form.cleaned_data['hr_comment']
+            leave_request.save()
+            return redirect('responsablerh_home')
+    else:
+        form = LeaveRequestCommentrhForm(instance=leave_request)
+
+    return render(request, 'rh_template/ajout_commentairerh.html', {
+        'form': form,
+        'leave_request': leave_request,
+    })
+
+
+
+def supprimer_commentairerh(request, leave_request_id):
+    leave_request = get_object_or_404(LeaveRequest, id=leave_request_id)
+
+    leave_request.hr_comment = ""
+    leave_request.save()
+    return redirect('responsablerh_home')
+
+
 def responsablerh_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
     responsablerh = Responsablerhs.objects.get(admin=user)
@@ -186,5 +210,42 @@ def responsablerh_profile_update(request):
         except:
             messages.error(request, "Failed to Update Profile")
             return redirect('responsablerh_profile')
+        
+from django.core.mail import send_mail
+from django.conf import settings
+
+def notify_employee_of_approval(leave_request):
+    employee = leave_request.employee_id
+    subject = 'Votre demande de congé a été approuvée'
+    message = f"Bonjour {employee.admin.first_name},\n\n" \
+              f"Votre demande de congé du {leave_request.start_date} au {leave_request.end_date} a été approuvée.\n\n" \
+              f"Cordialement,\nL'équipe RH"
+    recipient_list = [employee.admin.email]
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        recipient_list,
+        fail_silently=False,
+    )
+
+def notify_employee_of_rejection(leave_request):
+    employee = leave_request.employee_id
+    subject = 'Votre demande de congé a été rejetée'
+    message = f"Bonjour {employee.admin.first_name},\n\n" \
+              f"Votre demande de congé du {leave_request.start_date} au {leave_request.end_date} a été rejetée par le Responsable RH.\n\n" \
+              f"Veuillez modifier votre requette et le renvoyer.\n\n" \
+              f"Cordialement,\nL'équipe RH"
+    recipient_list = [employee.admin.email]
+
+    send_mail(
+        subject,
+        message,
+        settings.DEFAULT_FROM_EMAIL,
+        recipient_list,
+        fail_silently=False,
+    )
+
 
 

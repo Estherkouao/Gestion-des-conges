@@ -1,0 +1,66 @@
+/* styles.css */
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,700');
+
+.employee-dashboard {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+    padding: 20px;
+}
+h2 {
+    color: rgb(71, 205, 18); 
+    font-family: 'Garamond', serif; 
+    margin-bottom: 20px;
+}
+
+.leave-requests {
+    flex: 1; 
+    margin-bottom: 20px; 
+}
+
+
+.submit-leave-form {
+    width: 100%; 
+    background-color: rgb(209, 240, 208); 
+    padding: 20px;
+    text-align: center;
+    position: relative; 
+    bottom: 0; 
+}
+
+/* Boutons du formulaire */
+.submit-leave-form button {
+    background-color: blue;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.submit-leave-form button:hover {
+    background-color: darkblue;
+}
+
+.leave-request-block {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+
+self.helper.layout = Layout(
+    Row(
+        Column('leave_type', css_class='form-group col-md-6 mb-0'),
+        Column('start_date', css_class='form-group col-md-3 mb-0'),
+        Column('end_date', css_class='form-group col-md-3 mb-0'),
+        css_class='form-row'
+    ),
+    Div('reason', css_class='form-group'),
+    Submit('submit', 'Envoyer', css_class='btn btn-primary')
+)
+
+
+

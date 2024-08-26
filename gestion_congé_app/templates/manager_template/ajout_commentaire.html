@@ -1,0 +1,103 @@
+{% extends 'manager_template/base_template.html' %}
+
+{% block page_title %}
+    <strong>Ajouter un Commentaire </strong>
+{% endblock page_title %}
+
+{% block main_content %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="card-body">
+
+
+        <form role="form" method="POST" action="{% url 'ajout_commentaire' leave_request_id=leave_request.id %}">
+                        {% csrf_token %}
+
+                        
+                                {% comment %} Display Messages {% endcomment %}
+                                {% if messages %}
+                                <div class="form-group">
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                    {% if message.tags == "error" %}
+                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% elif message.tags == "success" %}
+                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                </div>
+                                </div>
+                                {% endif %}
+                            
+
+                         <div class="form-group">
+                             <label>Employé</label>
+                             <input type="text" class="form-control" name="employee" 
+                             value="{{ leave_request.employee_id.admin.first_name }} {{ leave_request.employee_id.admin.last_name }}" readonly>
+                         </div>
+
+                         <div class="form-group">
+                             <label>Type de Congé</label>
+                             <input type="text" class="form-control" name="type" 
+                             value="{{ leave_request.leave_type }}" readonly>
+                         </div>
+
+                         <div class="form-group">
+                             <label>Date début</label>
+                             <input type="start_date" class="form-control" name="start_date" 
+                             value="{{ leave_request.start_date }}" readonly>
+                         </div>
+
+                         <div class="form-group">
+                             <label>Date fin</label>
+                             <input type="end_date" class="form-control" name="end_date" 
+                             value="{{ leave_request.end_date }}" readonly>
+                         </div>
+
+                        <div class="form-group">
+                            <label>Nbr Jours</label>
+                            <input type="text" class="form-control" name="leave_days" 
+                             value="{{ leave_request.leave_days }}" readonly>
+                         </div>
+
+                        <div class="form-group">
+                            <label>Raison</label>
+                            <input type="text" class="form-control" name="reason" 
+                            value="{{ leave_request.reason }}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Commenter</label>
+                            <textarea class="form-control" name="manager_comment">{{ leave_request.manager_comment }}</textarea>
+                        </div>
+
+                        </div>
+
+                        <div class="card-footer">
+                           <button type="submit" class="btn btn-primary">engristrer commentaire</button>
+                        </div>
+            
+                    </form>
+
+                    <form role="form" method="POST" action="{% url 'supprimer_commentaire' leave_request_id=leave_request.id %}">
+                        {% csrf_token %}
+                        <div class="card-footer">
+                        <button type="submit" class="btn btn-danger">Supprimer commentaire</button>
+                        </div>
+                    </form>
+            </div>
+
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+{% endblock main_content %}

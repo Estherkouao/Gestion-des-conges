@@ -68,6 +68,9 @@ urlpatterns = [
    
    path('manager_profile/', ManagerViews.manager_profile, name="manager_profile"),
    path('manager_profile_update/', ManagerViews.manager_profile_update, name="manager_profile_update"),
+   path('ajout_commentaire/<int:leave_request_id>/', ManagerViews.ajout_commentaire, name="ajout_commentaire"),
+   path('supprimer_commentaire/<int:leave_request_id>/', ManagerViews.supprimer_commentaire, name="supprimer_commentaire"),
+   
    
 
     # url Rh
@@ -75,6 +78,8 @@ urlpatterns = [
    path('liste_employee_rh/', HrViews.liste_employee_rh, name="liste_employee_rh"),
    path('conge_atente_rh/', HrViews.conge_atente_rh, name="conge_atente_rh"),
    path('leave_balance_rh/', HrViews.leave_balance_rh, name="leave_balance_rh"),
+   path('ajout_commentairerh/<int:leave_request_id>/', HrViews.ajout_commentairerh, name="ajout_commentairerh"),
+   path('supprimer_commentairerh/<int:leave_request_id>/', HrViews.supprimer_commentairerh, name="supprimer_commentairerh"),
    
 
    path('responsablerh_profile/', HrViews.responsablerh_profile, name="responsablerh_profile"),
@@ -95,5 +100,11 @@ urlpatterns = [
    path('employee_profile/', EmployeeViews.employee_profile, name="employee_profile"),
    path('modifier_demande/<int:id>/', EmployeeViews.modifier_demande, name="modifier_demande"),
    path('supprimer_demande/<int:id>/', EmployeeViews.supprimer_demande, name="supprimer_demande"),
-]
+   path('liste_demandes_conge/', EmployeeViews.liste_demandes_conge, name="liste_demandes_conge"),
+   path('soumettre_demande/<int:leave_request_id>/', EmployeeViews.soumettre_demande, name="soumettre_demande"),
 
+   
+   path('employee_profile/', EmployeeViews.employee_profile, name="director_profile"),
+   path('employee_profile_update/', EmployeeViews.employee_profile_update, name="employee_profile_update"),
+
+]

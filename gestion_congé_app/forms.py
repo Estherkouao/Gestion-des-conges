@@ -1,5 +1,8 @@
 from django import forms 
 from django.forms import Form
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
+from crispy_forms.layout import Layout, Field, Div, Row, Column
 from gestion_congé_app.models import Managers, Department, LeaveRequest
 
 class LeaveRequestForm(forms.ModelForm):
@@ -7,12 +10,31 @@ class LeaveRequestForm(forms.ModelForm):
         model = LeaveRequest
         fields = ['leave_type', 'start_date', 'end_date', 'reason']
         widgets = {
-            'leave_type': forms.Select(choices={('MALADIE', 'maladie'),('CONGE', 'conge'),('MARIAGE', 'mariage'),('DECES', 'deces')}),
+            'leave_type': forms.Select(choices=[
+                ('MALADIE', 'Maladie'),
+                ('CONGE', 'Congé'),
+                ('MARIAGE', 'Mariage'),
+                ('DECES', 'Décès')
+            ]),
             'start_date': forms.DateInput(attrs={'type': 'date'}),
             'end_date': forms.DateInput(attrs={'type': 'date'}),
             'reason': forms.Textarea(attrs={'rows': 4}),
         }
 
+    def __init__(self, *args, **kwargs):
+        super(LeaveRequestForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('leave_type', css_class='form-group col-md-6 mb-0'),
+                Column('start_date', css_class='form-group col-md-3 mb-0'),
+                Column('end_date', css_class='form-group col-md-3 mb-0'),
+                css_class='form-row'
+            ),
+            Div('reason', css_class='form-group'),
+            Submit('submit', 'soumetre', css_class='btn btn-primary')
+        )
 
 class DateInput(forms.DateInput):
     input_type = "date"
