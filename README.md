@@ -21,6 +21,10 @@ diagramme de cas d'utilisation
 diagramme de classe
 ![image](https://github.com/user-attachments/assets/52e4dadd-6ad4-4289-a68d-f38031d077ad)
 
+diagramme de sequence
+![image](https://github.com/user-attachments/assets/f4f0c14b-0a8a-41c6-aa1c-a60ba7143dac)
+
+
 
 
 
