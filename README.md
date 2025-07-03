@@ -14,6 +14,8 @@ employer :  	kimou@gmail.com ; mot de passe : kimou
 
 -[Memoire_Kouao_fin.pdf](https://github.com/user-attachments/files/21035081/Memoire_Kouao_fin.pdf)
 
+
+diagramme de cas d'utilisation
 ![image](https://github.com/user-attachments/assets/0c5ea71a-b89e-4402-adfb-dd4ab1a42702)
 
 
