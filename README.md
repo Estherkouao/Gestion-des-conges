@@ -18,6 +18,10 @@ employer :  	kimou@gmail.com ; mot de passe : kimou
 diagramme de cas d'utilisation
 ![image](https://github.com/user-attachments/assets/0c5ea71a-b89e-4402-adfb-dd4ab1a42702)
 
+diagramme de classe
+![image](https://github.com/user-attachments/assets/52e4dadd-6ad4-4289-a68d-f38031d077ad)
+
+
 
 
 
